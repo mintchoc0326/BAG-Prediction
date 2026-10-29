@@ -1,0 +1,7 @@
+Analysis,Scans,Participants / scope
+DWI harmonization,"1,234",ADNI 314; HABS 487; ADRC 347; ADDECODE 86
+fMRI harmonization,847,"ADNI, HABS, ADRC"
+DWI CN OOF models,916,667 participants; HABS all-CN override
+fMRI CN OOF models,642,525 participants
+Paired DWI + fMRI,847,679 participants
+Shared fusion CN OOF,387,330 participants

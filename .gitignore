@@ -40,3 +40,22 @@
 .env.*
 *.pem
 *.key
+
+# Reviewed aggregate reports and their single-file generator.
+!/code/reporting/
+/code/reporting/*
+!/code/reporting/*.py
+!/reports/
+/reports/*
+!/reports/brain_age/
+/reports/brain_age/*
+!/reports/brain_age/*.md
+!/reports/brain_age/*.csv
+!/reports/brain_age/*.png
+!/reports/brain_age/*.pdf
+!/reports/brain_age/*.svg
+!/reports/brain_age/*.html
+!/reports/brain_age/*.json
+!/reports/brain_age/slide_tables/
+/reports/brain_age/slide_tables/*
+!/reports/brain_age/slide_tables/*.csv

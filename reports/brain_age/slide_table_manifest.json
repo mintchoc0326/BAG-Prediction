@@ -1,0 +1,1842 @@
+[
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 5,
+    "table": 1,
+    "context": "METHOD DETAILS | Data preparation and quality-control: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "i; n",
+        "Scan index; number of eligible scans",
+        "A participant may contribute multiple visits; i is not a participant index."
+      ],
+      [
+        "N; Aᵢ",
+        "N = 84 ROIs; Aᵢ is 84 × 84",
+        "A matrix entry is connectivity between two ROIs, not a regional volume."
+      ],
+      [
+        "vecᵤ; xᵢ",
+        "Upper triangle; xᵢ ∈ ℝ³⁴⁸⁶",
+        "Take each unordered ROI pair once; omit the diagonal."
+      ],
+      [
+        "d; X",
+        "d = N(N−1)/2 = 3,486; X is n × d",
+        "Rows are scans; columns refer to the same ROI pair across scans."
+      ],
+      [
+        "q(i); visit(i)",
+        "Participant identifier; visit identifier",
+        "q(i) defines grouping in cross-validation; visits remain together."
+      ],
+      [
+        "b(i); cᵢ",
+        "Technical batch; biological design vector",
+        "b(i) combines dataset and site; cᵢ encodes covariates to preserve."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 6,
+    "table": 1,
+    "context": "STUDY DESIGN | Cohort sizes and the paired evaluation set | report_tables/Table1_samples.csv; DWI metadata; modality CV summaries",
+    "rows": [
+      [
+        "Analysis",
+        "Scans",
+        "Participants / scope"
+      ],
+      [
+        "DWI harmonization",
+        "1,234",
+        "ADNI 314; HABS 487; ADRC 347; ADDECODE 86"
+      ],
+      [
+        "fMRI harmonization",
+        "847",
+        "ADNI, HABS, ADRC"
+      ],
+      [
+        "DWI CN OOF models",
+        "916",
+        "667 participants; HABS all-CN override"
+      ],
+      [
+        "fMRI CN OOF models",
+        "642",
+        "525 participants"
+      ],
+      [
+        "Paired DWI + fMRI",
+        "847",
+        "679 participants"
+      ],
+      [
+        "Shared fusion CN OOF",
+        "387",
+        "330 participants"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 8,
+    "table": 1,
+    "context": "METHOD DETAILS | DWI harmonization: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "xᵢⱼ; uᵢⱼ",
+        "Raw weight; log1p weight, dimensionless",
+        "i indexes scans; j indexes unique connections; u = log(1+x)."
+      ],
+      [
+        "αⱼ; βⱼ; cᵢ",
+        "Edge intercept; covariate coefficients; design vector",
+        "cᵢ contains age and sex in the saved DWI run; diagnosis is absent."
+      ],
+      [
+        "γᵦⱼ; δᵦⱼ",
+        "Batch location shift; positive batch scale",
+        "b = b(i) is dataset/site, not the Ridge intercept."
+      ],
+      [
+        "σⱼ; εᵢⱼ",
+        "Edge residual SD; standardized residual",
+        "Feature standardization precedes empirical Bayes batch estimation."
+      ],
+      [
+        "γ*ᵦⱼ; δ*ᵦⱼ",
+        "Empirical Bayes batch parameter estimates",
+        "Shrink noisy batch estimates using information across connections."
+      ],
+      [
+        "H; expm1",
+        "Harmonized quantity; inverse log1p",
+        "Reconstruct symmetric weights and apply the export nonnegative convention."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 10,
+    "table": 1,
+    "context": "METHOD DETAILS | fMRI harmonization: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "rᵢⱼ; zᵢⱼ",
+        "Correlation; Fisher-z feature",
+        "r is clipped inside (−1,1); z = arctanh(r)."
+      ],
+      [
+        "cᵢ; βⱼ",
+        "Covariate design vector; edge coefficients",
+        "Age is continuous; sex and diagnosis are categorical design columns."
+      ],
+      [
+        "αⱼ; b(i)",
+        "Feature intercept; dataset/site batch index",
+        "Each eligible scan belongs to one batch; singleton batches are removed."
+      ],
+      [
+        "γᵦⱼ; δᵦⱼ",
+        "Batch shift; batch scale",
+        "Adjustment removes modeled technical location and scale effects."
+      ],
+      [
+        "σⱼ; γ*; δ*",
+        "Residual SD; empirical Bayes batch estimates",
+        "The detailed ComBat diagram shows standardization and reconstruction."
+      ],
+      [
+        "zᴴ; rᴴ",
+        "Adjusted z feature; adjusted correlation",
+        "rᴴ = tanh(zᴴ); reconstruct an 84 × 84 symmetric matrix with diagonal 1."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 14,
+    "table": 1,
+    "context": "METHOD DETAILS | Harmonization evaluation: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "X; μ; V₂",
+        "Feature matrix; column means; two PCA loadings",
+        "T = (X−μ)V₂ is n × 2; separate before/after fits need not share axes."
+      ],
+      [
+        "K; recallₖ",
+        "Number of classes; TPₖ/(TPₖ+FNₖ)",
+        "Balanced accuracy averages sensitivity equally across classes."
+      ],
+      [
+        "yᵢ; ŷᵢ; ȳ",
+        "Actual age; estimated age; evaluation mean",
+        "Age and age errors are measured in years."
+      ],
+      [
+        "MAE; RMSE",
+        "Mean absolute error; root mean squared error",
+        "MAE = mean |ŷ−y|; RMSE = sqrt(mean (ŷ−y)²)."
+      ],
+      [
+        "R²",
+        "1 − residual sum of squares / total sum of squares",
+        "R² < 0 means worse squared error than predicting the evaluation mean."
+      ],
+      [
+        "Target-specific n",
+        "Eligible scans for each diagnostic target",
+        "Sample sizes and class counts differ; do not interpret all rows as one set."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 18,
+    "table": 1,
+    "context": "HARMONIZATION | Biological signal preservation is mixed | report_tables/Table3_harmonization.csv",
+    "rows": [
+      [
+        "Diagnostic",
+        "DWI before → after",
+        "fMRI before → after"
+      ],
+      [
+        "Sex balanced accuracy",
+        "0.782 → 0.766",
+        "0.631 → 0.640"
+      ],
+      [
+        "Diagnosis balanced accuracy",
+        "0.294 → 0.151",
+        "0.300 → 0.227"
+      ],
+      [
+        "Age MAE (years)",
+        "6.22 → 6.71",
+        "7.64 → 8.00"
+      ],
+      [
+        "Age R²",
+        "0.588 → 0.516",
+        "0.379 → 0.307"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 21,
+    "table": 1,
+    "context": "METHOD DETAILS | Single-modality Ridge: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "xᵢ; Zᵢ",
+        "Raw edge vector; standardized edge vector",
+        "Both have d = 3,486 entries; DWI and fMRI are fitted separately."
+      ],
+      [
+        "μⱼ; σⱼ",
+        "Training-column mean and standard deviation",
+        "Re-estimate inside every inner split; outer-test observations never fit them."
+      ],
+      [
+        "β ∈ ℝᵈ; b ∈ ℝ",
+        "Edge coefficients; unpenalized age intercept",
+        "ŷ = b + Zβ; β converts standardized feature values into age years."
+      ],
+      [
+        "λ; ‖β‖₂²",
+        "Nonnegative penalty; sum of squared coefficients",
+        "λ is sklearn Ridge alpha; larger values shrink coefficients more strongly."
+      ],
+      [
+        "Tₒ; Vₒ",
+        "Outer-training set; outer-test set for fold o",
+        "All visits from a participant belong to one outer fold."
+      ],
+      [
+        "λ*; OOF",
+        "Inner-CV selected penalty; out-of-fold prediction",
+        "Refit on Tₒ using λ*; predict Vₒ once. Full-data ComBat remains upstream."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 24,
+    "table": 1,
+    "context": "METHOD DETAILS | Single-modality GNN: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "v,u; N(v); Eᵣ",
+        "ROI nodes; neighbors of v; selected edge set",
+        "Use r for retained fraction to distinguish it from a participant index."
+      ],
+      [
+        "hᵥ⁽⁰⁾; hᵥ⁽ˡ⁾",
+        "84-value connectivity row; layer-l embedding",
+        "h⁽⁰⁾ ∈ ℝ⁸⁴; hidden vectors ∈ ℝ⁶⁴; three GINE layers."
+      ],
+      [
+        "eᵤᵥ; Wₗ",
+        "Scalar edge weight; learned edge projection",
+        "Project scalar edges to the current node-feature dimension before addition."
+      ],
+      [
+        "mᵥ⁽ˡ⁾; εₗ",
+        "Summed neighbor message; self-feature coefficient",
+        "ε is fixed at PyG default zero; the MLP transforms self + neighbor information."
+      ],
+      [
+        "g; Head(g)",
+        "64-value mean-pooled graph embedding; scalar output",
+        "Regressor: 64 → 32 → 1. Its output is standardized age."
+      ],
+      [
+        "μᵧ; σᵧ; ŷ",
+        "Training age mean / SD; predicted age in years",
+        "MSE trains standardized age; grouped inner validation selects epochs."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 26,
+    "table": 1,
+    "context": "SINGLE MODALITY | Ridge leads the full-cohort unimodal analyses | DWI_Ridge_CV_metrics.json; fMRI_Ridge_CV_metrics.json; selected GNN threshold summaries",
+    "rows": [
+      [
+        "Modality / model",
+        "CN scans",
+        "MAE (yr)",
+        "RMSE (yr)",
+        "R²",
+        "Pearson r"
+      ],
+      [
+        "DWI Ridge",
+        "916",
+        "5.98",
+        "7.89",
+        "0.519",
+        "0.724"
+      ],
+      [
+        "DWI GNN (top 50%)",
+        "916",
+        "7.56",
+        "9.61",
+        "0.287",
+        "0.537"
+      ],
+      [
+        "fMRI Ridge",
+        "642",
+        "7.33",
+        "9.49",
+        "0.406",
+        "0.637"
+      ],
+      [
+        "fMRI GNN (top 10%)",
+        "642",
+        "9.31",
+        "11.97",
+        "0.056",
+        "0.305"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 29,
+    "table": 1,
+    "context": "METHOD DETAILS | BAG and age-bias correction: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "f₋fold(i)",
+        "Predictor trained without scan i’s outer fold",
+        "Participant-level grouping also excludes other visits from that participant."
+      ],
+      [
+        "ŷᵢ; yᵢ",
+        "Predicted age; chronological age, both in years",
+        "ŷ is the raw prediction before subtracting the BAG age trend."
+      ],
+      [
+        "BAGᵢ",
+        "Raw brain age gap = ŷᵢ − yᵢ",
+        "Positive values indicate older predicted age relative to chronological age."
+      ],
+      [
+        "a; b",
+        "Age-bias intercept (years); slope (years/year)",
+        "These are calibration coefficients, distinct from Ridge β and intercept."
+      ],
+      [
+        "â; b̂; cBAGᵢ",
+        "Fitted coefficients; BAGᵢ − (â+b̂yᵢ)",
+        "The CN OOF population defines the reference age trend."
+      ],
+      [
+        "Reference vs inference",
+        "Descriptive calibration vs independent validation",
+        "Fitting and assessing correction on one reference does not independently validate it."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 32,
+    "table": 1,
+    "context": "METHOD DETAILS | Cross-modality pairing and training selection: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "D; F",
+        "Superscripts for DWI and fMRI",
+        "Superscripts identify modalities; they are not mathematical powers."
+      ],
+      [
+        "keyᵢ",
+        "Dataset / participant / normalized visit key",
+        "Key agreement does not establish acquisition-date proximity."
+      ],
+      [
+        "dᵢ; τ",
+        "Absolute age disagreement; tolerance τ = 0.01 yr",
+        "Exclude unresolved ages from training; do not silently replace them."
+      ],
+      [
+        "CNᴰ; CNᶠ",
+        "Modality-specific cognitively normal indicators",
+        "DWI HABS all-CN override is retained; fMRI requires explicit CN."
+      ],
+      [
+        "∧; sex_ok",
+        "Logical AND; no explicit sex disagreement",
+        "Every required condition must hold; missing sex is allowed in this model."
+      ],
+      [
+        "n; P; q(i)",
+        "387 scans; 330 participants; scan-to-participant map",
+        "Pairing yields 847 scans; policy and consistency filters define the evaluated subset."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 33,
+    "table": 1,
+    "context": "MULTIMODAL FUSION | Paired-sample selection changes the population | report_tables/Table1_samples.csv; metadata/fusion_metadata_audit_summary.json",
+    "rows": [
+      [
+        "Cohort",
+        "Paired scans",
+        "Evaluated CN scans",
+        "Evaluated participants"
+      ],
+      [
+        "ADNI",
+        "245",
+        "131",
+        "74"
+      ],
+      [
+        "ADRC",
+        "338",
+        "243",
+        "243"
+      ],
+      [
+        "HABS",
+        "264",
+        "13",
+        "13"
+      ],
+      [
+        "Total",
+        "847",
+        "387",
+        "330"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 34,
+    "table": 1,
+    "context": "MULTIMODAL FUSION | Fusion combines modalities in three ways | Ridge_baseline/fusion_summary.json; Weighted_Ridge/fusion_summary.json; GNN_fusion/GNN_fusion_summary.json",
+    "rows": [
+      [
+        "Approach",
+        "Implementation"
+      ],
+      [
+        "Ridge early fusion",
+        "Concatenate standardized DWI and fMRI edges: 6,972 features"
+      ],
+      [
+        "Weighted Ridge early fusion",
+        "[Z_DWI, w × Z_fMRI]; tune w and alpha jointly within training folds"
+      ],
+      [
+        "Ridge late mean",
+        "Average the two unimodal age predictions"
+      ],
+      [
+        "GNN fusion",
+        "Separate two-layer GINE encoders; concatenate pooled embeddings; nonlinear age head"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 36,
+    "table": 1,
+    "context": "METHOD DETAILS | Ridge fusions: early, weighted and late: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "Zᴰ; Zᶠ",
+        "DWI and fMRI standardized edge vectors",
+        "Each has 3,486 columns; fit modality columns using training data only."
+      ],
+      [
+        "[ ; ]; Zᴱ",
+        "Feature concatenation; early-fusion vector",
+        "Zᴱ = [Zᴰ;Zᶠ] contains 6,972 features."
+      ],
+      [
+        "w; Zᵂ",
+        "fMRI block scale; weighted concatenation",
+        "Zᵂ=[Zᴰ;wZᶠ]; DWI scale is one; w is not a contribution percentage."
+      ],
+      [
+        "λ*; w*",
+        "Penalty and weight jointly selected by inner CV",
+        "Search w ∈ {0,0.25,0.5,1,2,4}; λ is Ridge alpha."
+      ],
+      [
+        "β; b",
+        "6,972 edge coefficients; scalar intercept",
+        "Only β is penalized; never standardize again after block weighting."
+      ],
+      [
+        "ŷᴰ; ŷᶠ; ŷlate",
+        "Two unimodal OOF ages; arithmetic mean",
+        "Late fusion averages predictions in years, not coefficients or embeddings."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 38,
+    "table": 1,
+    "context": "METHOD DETAILS | GNN fusion: two modality-specific encoders: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "Hₘ⁽⁰⁾; m",
+        "Node input matrix; modality m ∈ {D,F}",
+        "84 × 84 input per modality; DWI log1p weights, fMRI signed correlations."
+      ],
+      [
+        "Eₘ; eᵤᵥ,ₘ",
+        "Positive top-50% topology; normalized scalar weight",
+        "e = selected positive weight / graph positive maximum; bidirectional edges."
+      ],
+      [
+        "Hₘ⁽ˡ⁾; gₘ",
+        "ROI embeddings; pooled modality vector",
+        "Two GINE layers, hidden 32; mean+max pooling makes gₘ ∈ ℝ⁶⁴."
+      ],
+      [
+        "g=[gᴰ;gᶠ]",
+        "Concatenated fusion representation ∈ ℝ¹²⁸",
+        "A separate encoder is learned for each modality; weights are not shared."
+      ],
+      [
+        "Head; μᵧ; σᵧ",
+        "128→32→1 MLP; training age mean and SD",
+        "Head predicts standardized age; multiply by σᵧ and add μᵧ for age years."
+      ],
+      [
+        "μₘ,j; σₘ,j",
+        "Training node-feature column statistics",
+        "Pool training graph nodes per modality; fresh outer refit follows inner epoch selection."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 40,
+    "table": 1,
+    "context": "MULTIMODAL FUSION | The fusion gain is modest and method dependent | report_tables/Table4_models_pooled.csv; Weighted_Ridge/fusion_summary.json",
+    "rows": [
+      [
+        "Model",
+        "MAE (yr)",
+        "RMSE (yr)",
+        "R²",
+        "r"
+      ],
+      [
+        "DWI Ridge",
+        "6.66",
+        "8.49",
+        "0.620",
+        "0.788"
+      ],
+      [
+        "Ridge early fusion",
+        "6.69",
+        "8.62",
+        "0.609",
+        "0.780"
+      ],
+      [
+        "Weighted Ridge fusion",
+        "6.47",
+        "8.38",
+        "0.630",
+        "0.794"
+      ],
+      [
+        "Ridge late mean",
+        "6.57",
+        "8.48",
+        "0.621",
+        "0.799"
+      ],
+      [
+        "GNN fusion",
+        "9.07",
+        "11.44",
+        "0.311",
+        "0.558"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 41,
+    "table": 1,
+    "context": "MULTIMODAL FUSION | Pooled performance masks cohort differences | report_tables/Table5_models_by_cohort.csv",
+    "rows": [
+      [
+        "Cohort",
+        "CN scans",
+        "DWI Ridge MAE",
+        "Weighted Ridge MAE",
+        "GNN fusion MAE"
+      ],
+      [
+        "ADNI",
+        "131",
+        "7.15",
+        "6.85",
+        "8.91"
+      ],
+      [
+        "ADRC",
+        "243",
+        "6.52",
+        "6.39",
+        "9.04"
+      ],
+      [
+        "HABS",
+        "13",
+        "4.12",
+        "4.16",
+        "11.24"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 43,
+    "table": 1,
+    "context": "METHOD DETAILS | Interpretability: from OOF models to attribution: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "f; x; x′",
+        "Saved outer-fold age predictor; observed input; reference",
+        "f outputs age years; x jointly contains both modalities’ node and edge attributes."
+      ],
+      [
+        "x′ node / edge",
+        "Training-mean node values; zero edge attributes",
+        "Node mean corresponds to standardized zero; keep observed diagonal fixed."
+      ],
+      [
+        "k; t; x(t)",
+        "Input coordinate; path fraction; interpolated input",
+        "k is not a fold; t ∈ [0,1]; x(t)=x′+t(x−x′); topology is unchanged."
+      ],
+      [
+        "∂f/∂xₖ; IGₖ",
+        "Local model sensitivity; integrated contribution",
+        "IG has age-year units; it explains f(x)−f(x′), not a causal effect."
+      ],
+      [
+        "S; rIG",
+        "Integration intervals; completeness residual",
+        "Trapezoidal quadrature; S = 64 initially, adapt up to 512; |rIG| ≤ 0.05 yr."
+      ],
+      [
+        "Δpred; rIG",
+        "Prediction consistency vs integration error",
+        "Require inference/checkpoint difference ≤ 0.001 yr; IG completeness is assessed separately."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 48,
+    "table": 1,
+    "context": "METHOD DETAILS | Interpretability summaries and robustness checks: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "Aₛ,ᵢⱼ; p; Vₚ",
+        "Scan connection IG; participant; participant visits",
+        "i,j now index ROI endpoints; s indexes scans to avoid an index collision."
+      ],
+      [
+        "A node; A edge",
+        "Node-profile attribution; edge-attribute attribution",
+        "Sum both symmetric node entries and both directed edge entries for each pair."
+      ],
+      [
+        "Āₚ,ᵢⱼ; Iᵢⱼ",
+        "Signed visit average; mean participant absolute score",
+        "Average signed scan values first, then take absolute values across participants."
+      ],
+      [
+        "ROIᵢ",
+        "½ Σⱼ≠ᵢ Iᵢⱼ, in attribution years",
+        "Each connection contributes half its absolute importance to each endpoint."
+      ],
+      [
+        "rank; top-k frequency",
+        "Per-fold ranking; count of folds in top k",
+        "k = 100 for connections; k = 10 for ROIs; frequency ranges from 0 to 5."
+      ],
+      [
+        "x₋ₘ,x′ₘ; ΔMAEₘ",
+        "Keep other input; replace modality m; error change",
+        "Average within participant, then across participants; positive = worse prediction."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 49,
+    "table": 1,
+    "context": "ARCHIVED ATTRIBUTION — RECONSTRUCTED MODELS | Attribution quality limits the strength of interpretation | GNN_interpretability/analysis_summary.json; reconstruction_check.csv",
+    "rows": [
+      [
+        "Quality check",
+        "Observed result"
+      ],
+      [
+        "IG integration steps",
+        "64 initially; up to 512"
+      ],
+      [
+        "Completeness tolerance",
+        "0.05 years"
+      ],
+      [
+        "Scans failing completeness",
+        "6 / 387 (1.6%)"
+      ],
+      [
+        "Maximum absolute IG residual",
+        "0.119 years"
+      ],
+      [
+        "Maximum difference from original OOF prediction",
+        "13.18 years"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 50,
+    "table": 1,
+    "context": "ARCHIVED ATTRIBUTION — RECONSTRUCTED MODELS | fMRI carries larger attribution in this fusion model | GNN_interpretability/modality_summary.csv",
+    "rows": [
+      [
+        "Modality",
+        "Mean signed IG (yr)",
+        "Mean absolute connection IG",
+        "Occlusion error increase (yr)"
+      ],
+      [
+        "DWI",
+        "-6.96",
+        "45.17",
+        "2.55"
+      ],
+      [
+        "fMRI",
+        "10.33",
+        "128.54",
+        "3.36"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 52,
+    "table": 1,
+    "context": "ARCHIVED ATTRIBUTION — RECONSTRUCTED MODELS | Leading connections and stability offer complementary views | GNN_interpretability/connection_importance.csv; connection_fold_stability.csv",
+    "rows": [
+      [
+        "Connection (fMRI)",
+        "Mean |IG| (yr)",
+        "Folds in top 100"
+      ],
+      [
+        "lh_precuneus ↔ rh_precuneus",
+        "0.415",
+        "5/5"
+      ],
+      [
+        "lh_entorhinal ↔ rh_entorhinal",
+        "0.233",
+        "5/5"
+      ],
+      [
+        "lh_isthmuscingulate ↔ lh_precuneus",
+        "0.195",
+        "5/5"
+      ],
+      [
+        "lh_inferiorparietal ↔ lh_precuneus",
+        "0.183",
+        "3/5"
+      ],
+      [
+        "lh_insula ↔ rh_insula",
+        "0.170",
+        "5/5"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable.pptx",
+    "slide": 54,
+    "table": 1,
+    "context": "APPENDIX | Result provenance and run selection | Paths are relative to the project results directory.",
+    "rows": [
+      [
+        "Section",
+        "Primary saved evidence"
+      ],
+      [
+        "Harmonization",
+        "final/Fusion/report_tables/Table3_harmonization.csv"
+      ],
+      [
+        "DWI single modality",
+        "final/DWI/{Ridge_BAG,GNN_BAG}/*summary*.json / *metrics.json"
+      ],
+      [
+        "fMRI single modality",
+        "final/fMRI/{Ridge_BAG,GNN_BAG}"
+      ],
+      [
+        "Shared fusion benchmark",
+        "final/Fusion/report_tables/Table1,4,5,6*.csv"
+      ],
+      [
+        "Interpretability",
+        "explore/GNN_attribution/*.csv; analysis_summary.json"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 5,
+    "table": 1,
+    "context": "METHOD DETAILS | Data preparation and quality-control: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "i; n",
+        "Scan index; number of eligible scans",
+        "A participant may contribute multiple visits; i is not a participant index."
+      ],
+      [
+        "N; Aᵢ",
+        "N = 84 ROIs; Aᵢ is 84 × 84",
+        "A matrix entry is connectivity between two ROIs, not a regional volume."
+      ],
+      [
+        "vecᵤ; xᵢ",
+        "Upper triangle; xᵢ ∈ ℝ³⁴⁸⁶",
+        "Take each unordered ROI pair once; omit the diagonal."
+      ],
+      [
+        "d; X",
+        "d = N(N−1)/2 = 3,486; X is n × d",
+        "Rows are scans; columns refer to the same ROI pair across scans."
+      ],
+      [
+        "q(i); visit(i)",
+        "Participant identifier; visit identifier",
+        "q(i) defines grouping in cross-validation; visits remain together."
+      ],
+      [
+        "b(i); cᵢ",
+        "Technical batch; biological design vector",
+        "b(i) combines dataset and site; cᵢ encodes covariates to preserve."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 6,
+    "table": 1,
+    "context": "STUDY DESIGN | Cohort sizes and the paired evaluation set | report_tables/Table1_samples.csv; DWI metadata; modality CV summaries",
+    "rows": [
+      [
+        "Analysis",
+        "Scans",
+        "Participants / scope"
+      ],
+      [
+        "DWI harmonization",
+        "1,234",
+        "ADNI 314; HABS 487; ADRC 347; ADDECODE 86"
+      ],
+      [
+        "fMRI harmonization",
+        "847",
+        "ADNI, HABS, ADRC"
+      ],
+      [
+        "DWI CN OOF models",
+        "916",
+        "667 participants; HABS all-CN override"
+      ],
+      [
+        "fMRI CN OOF models",
+        "642",
+        "525 participants"
+      ],
+      [
+        "Paired DWI + fMRI",
+        "847",
+        "679 participants"
+      ],
+      [
+        "Shared fusion CN OOF",
+        "387",
+        "330 participants"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 8,
+    "table": 1,
+    "context": "METHOD DETAILS | DWI harmonization: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "xᵢⱼ; uᵢⱼ",
+        "Raw weight; log1p weight, dimensionless",
+        "i indexes scans; j indexes unique connections; u = log(1+x)."
+      ],
+      [
+        "αⱼ; βⱼ; cᵢ",
+        "Edge intercept; covariate coefficients; design vector",
+        "cᵢ contains age and sex in the saved DWI run; diagnosis is absent."
+      ],
+      [
+        "γᵦⱼ; δᵦⱼ",
+        "Batch location shift; positive batch scale",
+        "b = b(i) is dataset/site, not the Ridge intercept."
+      ],
+      [
+        "σⱼ; εᵢⱼ",
+        "Edge residual SD; standardized residual",
+        "Feature standardization precedes empirical Bayes batch estimation."
+      ],
+      [
+        "γ*ᵦⱼ; δ*ᵦⱼ",
+        "Empirical Bayes batch parameter estimates",
+        "Shrink noisy batch estimates using information across connections."
+      ],
+      [
+        "H; expm1",
+        "Harmonized quantity; inverse log1p",
+        "Reconstruct symmetric weights and apply the export nonnegative convention."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 10,
+    "table": 1,
+    "context": "METHOD DETAILS | fMRI harmonization: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "rᵢⱼ; zᵢⱼ",
+        "Correlation; Fisher-z feature",
+        "r is clipped inside (−1,1); z = arctanh(r)."
+      ],
+      [
+        "cᵢ; βⱼ",
+        "Covariate design vector; edge coefficients",
+        "Age is continuous; sex and diagnosis are categorical design columns."
+      ],
+      [
+        "αⱼ; b(i)",
+        "Feature intercept; dataset/site batch index",
+        "Each eligible scan belongs to one batch; singleton batches are removed."
+      ],
+      [
+        "γᵦⱼ; δᵦⱼ",
+        "Batch shift; batch scale",
+        "Adjustment removes modeled technical location and scale effects."
+      ],
+      [
+        "σⱼ; γ*; δ*",
+        "Residual SD; empirical Bayes batch estimates",
+        "The detailed ComBat diagram shows standardization and reconstruction."
+      ],
+      [
+        "zᴴ; rᴴ",
+        "Adjusted z feature; adjusted correlation",
+        "rᴴ = tanh(zᴴ); reconstruct an 84 × 84 symmetric matrix with diagonal 1."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 14,
+    "table": 1,
+    "context": "METHOD DETAILS | Harmonization evaluation: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "X; μ; V₂",
+        "Feature matrix; column means; two PCA loadings",
+        "T = (X−μ)V₂ is n × 2; separate before/after fits need not share axes."
+      ],
+      [
+        "K; recallₖ",
+        "Number of classes; TPₖ/(TPₖ+FNₖ)",
+        "Balanced accuracy averages sensitivity equally across classes."
+      ],
+      [
+        "yᵢ; ŷᵢ; ȳ",
+        "Actual age; estimated age; evaluation mean",
+        "Age and age errors are measured in years."
+      ],
+      [
+        "MAE; RMSE",
+        "Mean absolute error; root mean squared error",
+        "MAE = mean |ŷ−y|; RMSE = sqrt(mean (ŷ−y)²)."
+      ],
+      [
+        "R²",
+        "1 − residual sum of squares / total sum of squares",
+        "R² < 0 means worse squared error than predicting the evaluation mean."
+      ],
+      [
+        "Target-specific n",
+        "Eligible scans for each diagnostic target",
+        "Sample sizes and class counts differ; do not interpret all rows as one set."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 18,
+    "table": 1,
+    "context": "HARMONIZATION | Biological signal preservation is mixed | report_tables/Table3_harmonization.csv",
+    "rows": [
+      [
+        "Diagnostic",
+        "DWI before → after",
+        "fMRI before → after"
+      ],
+      [
+        "Sex balanced accuracy",
+        "0.782 → 0.766",
+        "0.631 → 0.640"
+      ],
+      [
+        "Diagnosis balanced accuracy",
+        "0.294 → 0.151",
+        "0.300 → 0.227"
+      ],
+      [
+        "Age MAE (years)",
+        "6.22 → 6.71",
+        "7.64 → 8.00"
+      ],
+      [
+        "Age R²",
+        "0.588 → 0.516",
+        "0.379 → 0.307"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 21,
+    "table": 1,
+    "context": "METHOD DETAILS | Single-modality Ridge: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "xᵢ; Zᵢ",
+        "Raw edge vector; standardized edge vector",
+        "Both have d = 3,486 entries; DWI and fMRI are fitted separately."
+      ],
+      [
+        "μⱼ; σⱼ",
+        "Training-column mean and standard deviation",
+        "Re-estimate inside every inner split; outer-test observations never fit them."
+      ],
+      [
+        "β ∈ ℝᵈ; b ∈ ℝ",
+        "Edge coefficients; unpenalized age intercept",
+        "ŷ = b + Zβ; β converts standardized feature values into age years."
+      ],
+      [
+        "λ; ‖β‖₂²",
+        "Nonnegative penalty; sum of squared coefficients",
+        "λ is sklearn Ridge alpha; larger values shrink coefficients more strongly."
+      ],
+      [
+        "Tₒ; Vₒ",
+        "Outer-training set; outer-test set for fold o",
+        "All visits from a participant belong to one outer fold."
+      ],
+      [
+        "λ*; OOF",
+        "Inner-CV selected penalty; out-of-fold prediction",
+        "Refit on Tₒ using λ*; predict Vₒ once. Full-data ComBat remains upstream."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 24,
+    "table": 1,
+    "context": "METHOD DETAILS | Single-modality GNN: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "v,u; N(v); Eᵣ",
+        "ROI nodes; neighbors of v; selected edge set",
+        "Use r for retained fraction to distinguish it from a participant index."
+      ],
+      [
+        "hᵥ⁽⁰⁾; hᵥ⁽ˡ⁾",
+        "84-value connectivity row; layer-l embedding",
+        "h⁽⁰⁾ ∈ ℝ⁸⁴; hidden vectors ∈ ℝ⁶⁴; three GINE layers."
+      ],
+      [
+        "eᵤᵥ; Wₗ",
+        "Scalar edge weight; learned edge projection",
+        "Project scalar edges to the current node-feature dimension before addition."
+      ],
+      [
+        "mᵥ⁽ˡ⁾; εₗ",
+        "Summed neighbor message; self-feature coefficient",
+        "ε is fixed at PyG default zero; the MLP transforms self + neighbor information."
+      ],
+      [
+        "g; Head(g)",
+        "64-value mean-pooled graph embedding; scalar output",
+        "Regressor: 64 → 32 → 1. Its output is standardized age."
+      ],
+      [
+        "μᵧ; σᵧ; ŷ",
+        "Training age mean / SD; predicted age in years",
+        "MSE trains standardized age; grouped inner validation selects epochs."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 26,
+    "table": 1,
+    "context": "SINGLE MODALITY | Ridge leads the full-cohort unimodal analyses | DWI_Ridge_CV_metrics.json; fMRI_Ridge_CV_metrics.json; selected GNN threshold summaries",
+    "rows": [
+      [
+        "Modality / model",
+        "CN scans",
+        "MAE (yr)",
+        "RMSE (yr)",
+        "R²",
+        "Pearson r"
+      ],
+      [
+        "DWI Ridge",
+        "916",
+        "5.98",
+        "7.89",
+        "0.519",
+        "0.724"
+      ],
+      [
+        "DWI GNN (top 50%)",
+        "916",
+        "7.56",
+        "9.61",
+        "0.287",
+        "0.537"
+      ],
+      [
+        "fMRI Ridge",
+        "642",
+        "7.33",
+        "9.49",
+        "0.406",
+        "0.637"
+      ],
+      [
+        "fMRI GNN (top 10%)",
+        "642",
+        "9.31",
+        "11.97",
+        "0.056",
+        "0.305"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 29,
+    "table": 1,
+    "context": "METHOD DETAILS | BAG and age-bias correction: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "f₋fold(i)",
+        "Predictor trained without scan i’s outer fold",
+        "Participant-level grouping also excludes other visits from that participant."
+      ],
+      [
+        "ŷᵢ; yᵢ",
+        "Predicted age; chronological age, both in years",
+        "ŷ is the raw prediction before subtracting the BAG age trend."
+      ],
+      [
+        "BAGᵢ",
+        "Raw brain age gap = ŷᵢ − yᵢ",
+        "Positive values indicate older predicted age relative to chronological age."
+      ],
+      [
+        "a; b",
+        "Age-bias intercept (years); slope (years/year)",
+        "These are calibration coefficients, distinct from Ridge β and intercept."
+      ],
+      [
+        "â; b̂; cBAGᵢ",
+        "Fitted coefficients; BAGᵢ − (â+b̂yᵢ)",
+        "The CN OOF population defines the reference age trend."
+      ],
+      [
+        "Reference vs inference",
+        "Descriptive calibration vs independent validation",
+        "Fitting and assessing correction on one reference does not independently validate it."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 32,
+    "table": 1,
+    "context": "METHOD DETAILS | Cross-modality pairing and training selection: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "D; F",
+        "Superscripts for DWI and fMRI",
+        "Superscripts identify modalities; they are not mathematical powers."
+      ],
+      [
+        "keyᵢ",
+        "Dataset / participant / normalized visit key",
+        "Key agreement does not establish acquisition-date proximity."
+      ],
+      [
+        "dᵢ; τ",
+        "Absolute age disagreement; tolerance τ = 0.01 yr",
+        "Exclude unresolved ages from training; do not silently replace them."
+      ],
+      [
+        "CNᴰ; CNᶠ",
+        "Modality-specific cognitively normal indicators",
+        "DWI HABS all-CN override is retained; fMRI requires explicit CN."
+      ],
+      [
+        "∧; sex_ok",
+        "Logical AND; no explicit sex disagreement",
+        "Every required condition must hold; missing sex is allowed in this model."
+      ],
+      [
+        "n; P; q(i)",
+        "387 scans; 330 participants; scan-to-participant map",
+        "Pairing yields 847 scans; policy and consistency filters define the evaluated subset."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 33,
+    "table": 1,
+    "context": "MULTIMODAL FUSION | Paired-sample selection changes the population | report_tables/Table1_samples.csv; metadata/fusion_metadata_audit_summary.json",
+    "rows": [
+      [
+        "Cohort",
+        "Paired scans",
+        "Evaluated CN scans",
+        "Evaluated participants"
+      ],
+      [
+        "ADNI",
+        "245",
+        "131",
+        "74"
+      ],
+      [
+        "ADRC",
+        "338",
+        "243",
+        "243"
+      ],
+      [
+        "HABS",
+        "264",
+        "13",
+        "13"
+      ],
+      [
+        "Total",
+        "847",
+        "387",
+        "330"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 34,
+    "table": 1,
+    "context": "MULTIMODAL FUSION | Fusion combines modalities in three ways | Ridge_baseline/fusion_summary.json; Weighted_Ridge/fusion_summary.json; GNN_fusion/GNN_fusion_summary.json",
+    "rows": [
+      [
+        "Approach",
+        "Implementation"
+      ],
+      [
+        "Ridge early fusion",
+        "Concatenate standardized DWI and fMRI edges: 6,972 features"
+      ],
+      [
+        "Weighted Ridge early fusion",
+        "[Z_DWI, w × Z_fMRI]; tune w and alpha jointly within training folds"
+      ],
+      [
+        "Ridge late mean",
+        "Average the two unimodal age predictions"
+      ],
+      [
+        "GNN fusion",
+        "Separate two-layer GINE encoders; concatenate pooled embeddings; nonlinear age head"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 36,
+    "table": 1,
+    "context": "METHOD DETAILS | Ridge fusions: early, weighted and late: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "Zᴰ; Zᶠ",
+        "DWI and fMRI standardized edge vectors",
+        "Each has 3,486 columns; fit modality columns using training data only."
+      ],
+      [
+        "[ ; ]; Zᴱ",
+        "Feature concatenation; early-fusion vector",
+        "Zᴱ = [Zᴰ;Zᶠ] contains 6,972 features."
+      ],
+      [
+        "w; Zᵂ",
+        "fMRI block scale; weighted concatenation",
+        "Zᵂ=[Zᴰ;wZᶠ]; DWI scale is one; w is not a contribution percentage."
+      ],
+      [
+        "λ*; w*",
+        "Penalty and weight jointly selected by inner CV",
+        "Search w ∈ {0,0.25,0.5,1,2,4}; λ is Ridge alpha."
+      ],
+      [
+        "β; b",
+        "6,972 edge coefficients; scalar intercept",
+        "Only β is penalized; never standardize again after block weighting."
+      ],
+      [
+        "ŷᴰ; ŷᶠ; ŷlate",
+        "Two unimodal OOF ages; arithmetic mean",
+        "Late fusion averages predictions in years, not coefficients or embeddings."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 38,
+    "table": 1,
+    "context": "METHOD DETAILS | GNN fusion: two modality-specific encoders: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "Hₘ⁽⁰⁾; m",
+        "Node input matrix; modality m ∈ {D,F}",
+        "84 × 84 input per modality; DWI log1p weights, fMRI signed correlations."
+      ],
+      [
+        "Eₘ; eᵤᵥ,ₘ",
+        "Positive top-50% topology; normalized scalar weight",
+        "e = selected positive weight / graph positive maximum; bidirectional edges."
+      ],
+      [
+        "Hₘ⁽ˡ⁾; gₘ",
+        "ROI embeddings; pooled modality vector",
+        "Two GINE layers, hidden 32; mean+max pooling makes gₘ ∈ ℝ⁶⁴."
+      ],
+      [
+        "g=[gᴰ;gᶠ]",
+        "Concatenated fusion representation ∈ ℝ¹²⁸",
+        "A separate encoder is learned for each modality; weights are not shared."
+      ],
+      [
+        "Head; μᵧ; σᵧ",
+        "128→32→1 MLP; training age mean and SD",
+        "Head predicts standardized age; multiply by σᵧ and add μᵧ for age years."
+      ],
+      [
+        "μₘ,j; σₘ,j",
+        "Training node-feature column statistics",
+        "Pool training graph nodes per modality; fresh outer refit follows inner epoch selection."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 40,
+    "table": 1,
+    "context": "MULTIMODAL FUSION | The fusion gain is modest and method dependent | report_tables/Table4_models_pooled.csv; Weighted_Ridge/fusion_summary.json",
+    "rows": [
+      [
+        "Model",
+        "MAE (yr)",
+        "RMSE (yr)",
+        "R²",
+        "r"
+      ],
+      [
+        "DWI Ridge",
+        "6.66",
+        "8.49",
+        "0.620",
+        "0.788"
+      ],
+      [
+        "Ridge early fusion",
+        "6.69",
+        "8.62",
+        "0.609",
+        "0.780"
+      ],
+      [
+        "Weighted Ridge fusion",
+        "6.47",
+        "8.38",
+        "0.630",
+        "0.794"
+      ],
+      [
+        "Ridge late mean",
+        "6.57",
+        "8.48",
+        "0.621",
+        "0.799"
+      ],
+      [
+        "GNN fusion",
+        "9.07",
+        "11.44",
+        "0.311",
+        "0.558"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 41,
+    "table": 1,
+    "context": "MULTIMODAL FUSION | Pooled performance masks cohort differences | report_tables/Table5_models_by_cohort.csv",
+    "rows": [
+      [
+        "Cohort",
+        "CN scans",
+        "DWI Ridge MAE",
+        "Weighted Ridge MAE",
+        "GNN fusion MAE"
+      ],
+      [
+        "ADNI",
+        "131",
+        "7.15",
+        "6.85",
+        "8.91"
+      ],
+      [
+        "ADRC",
+        "243",
+        "6.52",
+        "6.39",
+        "9.04"
+      ],
+      [
+        "HABS",
+        "13",
+        "4.12",
+        "4.16",
+        "11.24"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 43,
+    "table": 1,
+    "context": "METHOD DETAILS | Interpretability: from OOF models to attribution: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "f; x; x′",
+        "Saved outer-fold age predictor; observed input; reference",
+        "f outputs age years; x jointly contains both modalities’ node and edge attributes."
+      ],
+      [
+        "x′ node / edge",
+        "Training-mean node values; zero edge attributes",
+        "Node mean corresponds to standardized zero; keep observed diagonal fixed."
+      ],
+      [
+        "k; t; x(t)",
+        "Input coordinate; path fraction; interpolated input",
+        "k is not a fold; t ∈ [0,1]; x(t)=x′+t(x−x′); topology is unchanged."
+      ],
+      [
+        "∂f/∂xₖ; IGₖ",
+        "Local model sensitivity; integrated contribution",
+        "IG has age-year units; it explains f(x)−f(x′), not a causal effect."
+      ],
+      [
+        "S; rIG",
+        "Integration intervals; completeness residual",
+        "Trapezoidal quadrature; S = 64 initially, adapt up to 512; |rIG| ≤ 0.05 yr."
+      ],
+      [
+        "Δpred; rIG",
+        "Prediction consistency vs integration error",
+        "Require inference/checkpoint difference ≤ 0.001 yr; IG completeness is assessed separately."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 48,
+    "table": 1,
+    "context": "METHOD DETAILS | Interpretability summaries and robustness checks: notation | Implementation-verified notation | See preceding diagram and speaker notes.",
+    "rows": [
+      [
+        "Symbol / object",
+        "Definition and dimension",
+        "How to interpret it"
+      ],
+      [
+        "Aₛ,ᵢⱼ; p; Vₚ",
+        "Scan connection IG; participant; participant visits",
+        "i,j now index ROI endpoints; s indexes scans to avoid an index collision."
+      ],
+      [
+        "A node; A edge",
+        "Node-profile attribution; edge-attribute attribution",
+        "Sum both symmetric node entries and both directed edge entries for each pair."
+      ],
+      [
+        "Āₚ,ᵢⱼ; Iᵢⱼ",
+        "Signed visit average; mean participant absolute score",
+        "Average signed scan values first, then take absolute values across participants."
+      ],
+      [
+        "ROIᵢ",
+        "½ Σⱼ≠ᵢ Iᵢⱼ, in attribution years",
+        "Each connection contributes half its absolute importance to each endpoint."
+      ],
+      [
+        "rank; top-k frequency",
+        "Per-fold ranking; count of folds in top k",
+        "k = 100 for connections; k = 10 for ROIs; frequency ranges from 0 to 5."
+      ],
+      [
+        "x₋ₘ,x′ₘ; ΔMAEₘ",
+        "Keep other input; replace modality m; error change",
+        "Average within participant, then across participants; positive = worse prediction."
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 49,
+    "table": 1,
+    "context": "ARCHIVED ATTRIBUTION — RECONSTRUCTED MODELS | Attribution quality limits the strength of interpretation | GNN_interpretability/analysis_summary.json; reconstruction_check.csv",
+    "rows": [
+      [
+        "Quality check",
+        "Observed result"
+      ],
+      [
+        "IG integration steps",
+        "64 initially; up to 512"
+      ],
+      [
+        "Completeness tolerance",
+        "0.05 years"
+      ],
+      [
+        "Scans failing completeness",
+        "6 / 387 (1.6%)"
+      ],
+      [
+        "Maximum absolute IG residual",
+        "0.119 years"
+      ],
+      [
+        "Maximum difference from original OOF prediction",
+        "13.18 years"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 50,
+    "table": 1,
+    "context": "ARCHIVED ATTRIBUTION — RECONSTRUCTED MODELS | fMRI carries larger attribution in this fusion model | GNN_interpretability/modality_summary.csv",
+    "rows": [
+      [
+        "Modality",
+        "Mean signed IG (yr)",
+        "Mean absolute connection IG",
+        "Occlusion error increase (yr)"
+      ],
+      [
+        "DWI",
+        "-6.96",
+        "45.17",
+        "2.55"
+      ],
+      [
+        "fMRI",
+        "10.33",
+        "128.54",
+        "3.36"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 52,
+    "table": 1,
+    "context": "ARCHIVED ATTRIBUTION — RECONSTRUCTED MODELS | Leading connections and stability offer complementary views | GNN_interpretability/connection_importance.csv; connection_fold_stability.csv",
+    "rows": [
+      [
+        "Connection (fMRI)",
+        "Mean |IG| (yr)",
+        "Folds in top 100"
+      ],
+      [
+        "lh_precuneus ↔ rh_precuneus",
+        "0.415",
+        "5/5"
+      ],
+      [
+        "lh_entorhinal ↔ rh_entorhinal",
+        "0.233",
+        "5/5"
+      ],
+      [
+        "lh_isthmuscingulate ↔ lh_precuneus",
+        "0.195",
+        "5/5"
+      ],
+      [
+        "lh_inferiorparietal ↔ lh_precuneus",
+        "0.183",
+        "3/5"
+      ],
+      [
+        "lh_insula ↔ rh_insula",
+        "0.170",
+        "5/5"
+      ]
+    ]
+  },
+  {
+    "deck": "Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx",
+    "slide": 54,
+    "table": 1,
+    "context": "APPENDIX | Result provenance and run selection | Paths are relative to the project results directory.",
+    "rows": [
+      [
+        "Section",
+        "Primary saved evidence"
+      ],
+      [
+        "Harmonization",
+        "final/Fusion/report_tables/Table3_harmonization.csv"
+      ],
+      [
+        "DWI single modality",
+        "final/DWI/{Ridge_BAG,GNN_BAG}/*summary*.json / *metrics.json"
+      ],
+      [
+        "fMRI single modality",
+        "final/fMRI/{Ridge_BAG,GNN_BAG}"
+      ],
+      [
+        "Shared fusion benchmark",
+        "final/Fusion/report_tables/Table1,4,5,6*.csv"
+      ],
+      [
+        "Interpretability",
+        "explore/GNN_attribution/*.csv; analysis_summary.json"
+      ]
+    ]
+  }
+]

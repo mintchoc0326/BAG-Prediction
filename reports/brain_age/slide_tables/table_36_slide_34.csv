@@ -1,0 +1,5 @@
+Approach,Implementation
+Ridge early fusion,"Concatenate standardized DWI and fMRI edges: 6,972 features"
+Weighted Ridge early fusion,"[Z_DWI, w × Z_fMRI]; tune w and alpha jointly within training folds"
+Ridge late mean,Average the two unimodal age predictions
+GNN fusion,Separate two-layer GINE encoders; concatenate pooled embeddings; nonlinear age head

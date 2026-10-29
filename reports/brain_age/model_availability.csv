@@ -1,0 +1,49 @@
+dataset,model,benchmark,n_scans,status
+ADNI,DWI,Matched CN OOF,131,Available
+ADNI,DWI,Full unimodal CN OOF,180,Available
+ADNI,fMRI,Matched CN OOF,131,Available
+ADNI,fMRI,Full unimodal CN OOF,189,Available
+ADNI,WEIGHTED_EARLY_FUSION,Matched CN OOF,131,Available
+ADNI,WEIGHTED_EARLY_FUSION,Full unimodal CN OOF,0,Not available in saved CN OOF predictions
+ADNI,DWI_GNN,Matched CN OOF,131,Available
+ADNI,DWI_GNN,Full unimodal CN OOF,180,Available
+ADNI,fMRI_GNN,Matched CN OOF,131,Available
+ADNI,fMRI_GNN,Full unimodal CN OOF,189,Available
+ADNI,GNN_FUSION,Matched CN OOF,131,Available
+ADNI,GNN_FUSION,Full unimodal CN OOF,0,Not available in saved CN OOF predictions
+ADRC,DWI,Matched CN OOF,243,Available
+ADRC,DWI,Full unimodal CN OOF,249,Available
+ADRC,fMRI,Matched CN OOF,243,Available
+ADRC,fMRI,Full unimodal CN OOF,243,Available
+ADRC,WEIGHTED_EARLY_FUSION,Matched CN OOF,243,Available
+ADRC,WEIGHTED_EARLY_FUSION,Full unimodal CN OOF,0,Not available in saved CN OOF predictions
+ADRC,DWI_GNN,Matched CN OOF,243,Available
+ADRC,DWI_GNN,Full unimodal CN OOF,249,Available
+ADRC,fMRI_GNN,Matched CN OOF,243,Available
+ADRC,fMRI_GNN,Full unimodal CN OOF,243,Available
+ADRC,GNN_FUSION,Matched CN OOF,243,Available
+ADRC,GNN_FUSION,Full unimodal CN OOF,0,Not available in saved CN OOF predictions
+HABS,DWI,Matched CN OOF,13,Available
+HABS,DWI,Full unimodal CN OOF,487,Available
+HABS,fMRI,Matched CN OOF,13,Available
+HABS,fMRI,Full unimodal CN OOF,210,Available
+HABS,WEIGHTED_EARLY_FUSION,Matched CN OOF,13,Available
+HABS,WEIGHTED_EARLY_FUSION,Full unimodal CN OOF,0,Not available in saved CN OOF predictions
+HABS,DWI_GNN,Matched CN OOF,13,Available
+HABS,DWI_GNN,Full unimodal CN OOF,487,Available
+HABS,fMRI_GNN,Matched CN OOF,13,Available
+HABS,fMRI_GNN,Full unimodal CN OOF,210,Available
+HABS,GNN_FUSION,Matched CN OOF,13,Available
+HABS,GNN_FUSION,Full unimodal CN OOF,0,Not available in saved CN OOF predictions
+ADDECODE,DWI,Matched CN OOF,0,Not available in saved CN OOF predictions
+ADDECODE,DWI,Full unimodal CN OOF,0,Not available in saved CN OOF predictions
+ADDECODE,fMRI,Matched CN OOF,0,Not available in saved CN OOF predictions
+ADDECODE,fMRI,Full unimodal CN OOF,0,Not available in saved CN OOF predictions
+ADDECODE,WEIGHTED_EARLY_FUSION,Matched CN OOF,0,Not available in saved CN OOF predictions
+ADDECODE,WEIGHTED_EARLY_FUSION,Full unimodal CN OOF,0,Not available in saved CN OOF predictions
+ADDECODE,DWI_GNN,Matched CN OOF,0,Not available in saved CN OOF predictions
+ADDECODE,DWI_GNN,Full unimodal CN OOF,0,Not available in saved CN OOF predictions
+ADDECODE,fMRI_GNN,Matched CN OOF,0,Not available in saved CN OOF predictions
+ADDECODE,fMRI_GNN,Full unimodal CN OOF,0,Not available in saved CN OOF predictions
+ADDECODE,GNN_FUSION,Matched CN OOF,0,Not available in saved CN OOF predictions
+ADDECODE,GNN_FUSION,Full unimodal CN OOF,0,Not available in saved CN OOF predictions

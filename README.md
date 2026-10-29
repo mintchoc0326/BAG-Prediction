@@ -67,3 +67,15 @@ Attribution requires original outer-fold checkpoints and matching saved predicti
 Git tracks current source code and documentation only. Raw/derived data, participant metadata, predictions, checkpoints, presentations, caches, environment folders, historical notebooks, and audit backups remain local. `.gitignore` uses explicit allowlists for `code/`, `data/`, and `results/` to keep generated or participant-level files out of future commits.
 
 No dataset redistribution rights or software license are granted by this README. Add an appropriate license once the project owner has chosen one.
+
+## Reproduce the English tables and performance figure
+
+A single script, [`code/reporting/build_results_report.py`](code/reporting/build_results_report.py), computes MAE, RMSE, R², and Pearson r from existing raw CN out-of-fold predictions. It generates the six-model matched-cohort figure, aggregate tables, full-population unimodal supplements, and every native table from both reviewed slide decks.
+
+```bash
+python code/reporting/build_results_report.py
+# Reproduce the 46 presentation tables without private prediction files:
+python code/reporting/build_results_report.py --tables-only --output /tmp/bag-slide-tables
+```
+
+See [`reports/brain_age/README.md`](reports/brain_age/README.md) for data sources, confidence intervals, model definitions, and limitations. Only aggregate reports are published; individual predictions remain local. Presentation tables are embedded display-value snapshots, not automatic recomputations of every historical analysis.

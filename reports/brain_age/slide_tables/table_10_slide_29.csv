@@ -1,0 +1,7 @@
+Symbol / object,Definition and dimension,How to interpret it
+f₋fold(i),Predictor trained without scan i’s outer fold,Participant-level grouping also excludes other visits from that participant.
+ŷᵢ; yᵢ,"Predicted age; chronological age, both in years",ŷ is the raw prediction before subtracting the BAG age trend.
+BAGᵢ,Raw brain age gap = ŷᵢ − yᵢ,Positive values indicate older predicted age relative to chronological age.
+a; b,Age-bias intercept (years); slope (years/year),"These are calibration coefficients, distinct from Ridge β and intercept."
+â; b̂; cBAGᵢ,Fitted coefficients; BAGᵢ − (â+b̂yᵢ),The CN OOF population defines the reference age trend.
+Reference vs inference,Descriptive calibration vs independent validation,Fitting and assessing correction on one reference does not independently validate it.

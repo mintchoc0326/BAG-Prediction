@@ -1,0 +1,7 @@
+Symbol / object,Definition and dimension,How to interpret it
+xᵢ; Zᵢ,Raw edge vector; standardized edge vector,"Both have d = 3,486 entries; DWI and fMRI are fitted separately."
+μⱼ; σⱼ,Training-column mean and standard deviation,Re-estimate inside every inner split; outer-test observations never fit them.
+β ∈ ℝᵈ; b ∈ ℝ,Edge coefficients; unpenalized age intercept,ŷ = b + Zβ; β converts standardized feature values into age years.
+λ; ‖β‖₂²,Nonnegative penalty; sum of squared coefficients,λ is sklearn Ridge alpha; larger values shrink coefficients more strongly.
+Tₒ; Vₒ,Outer-training set; outer-test set for fold o,All visits from a participant belong to one outer fold.
+λ*; OOF,Inner-CV selected penalty; out-of-fold prediction,Refit on Tₒ using λ*; predict Vₒ once. Full-data ComBat remains upstream.

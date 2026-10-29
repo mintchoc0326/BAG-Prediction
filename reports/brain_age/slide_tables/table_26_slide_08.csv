@@ -1,0 +1,7 @@
+Symbol / object,Definition and dimension,How to interpret it
+xᵢⱼ; uᵢⱼ,"Raw weight; log1p weight, dimensionless",i indexes scans; j indexes unique connections; u = log(1+x).
+αⱼ; βⱼ; cᵢ,Edge intercept; covariate coefficients; design vector,cᵢ contains age and sex in the saved DWI run; diagnosis is absent.
+γᵦⱼ; δᵦⱼ,Batch location shift; positive batch scale,"b = b(i) is dataset/site, not the Ridge intercept."
+σⱼ; εᵢⱼ,Edge residual SD; standardized residual,Feature standardization precedes empirical Bayes batch estimation.
+γ*ᵦⱼ; δ*ᵦⱼ,Empirical Bayes batch parameter estimates,Shrink noisy batch estimates using information across connections.
+H; expm1,Harmonized quantity; inverse log1p,Reconstruct symmetric weights and apply the export nonnegative convention.

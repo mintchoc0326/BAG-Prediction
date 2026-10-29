@@ -1,0 +1,23 @@
+{
+  "bootstrap_replicates": 3000,
+  "seed": 20261029,
+  "ci": "Participant-cluster percentile 95% CI; pooled resampling stratified by cohort; fixed OOF predictions, no refitting",
+  "point_estimates": "Scan-weighted; all participant visits kept together in bootstrap",
+  "slide_tables": 46,
+  "sources": {
+    "results/final/Fusion/GNN_fusion/CN_OOF_predictions.csv": "c52728cef8cd5ad724a7b66345bde232ce84bf1fbe6b3b393f8924b889372dce",
+    "results/final/Fusion/Ridge_baseline/CN_OOF_predictions.csv": "d6a1d47a4879e117b172370392a8500c6aac5e6d8975ca5bd8bf5810915cc2fc",
+    "results/final/Fusion/Weighted_Ridge/CN_OOF_predictions.csv": "9f9870111e4bb94d5d36013490796f1041e66c602a3e8164dae96d37bea203a1",
+    "results/final/fMRI/Ridge_BAG/fMRI_Ridge_CN_OOF_predictions.csv": "0282f306fab0546197cd3f0dfbe37d282f139c93f35cefcb9a8322f548db546d",
+    "results/final/DWI/Ridge_BAG/DWI_Ridge_CN_OOF_predictions.csv": "e04df566c5fda51b93783c8679b9b8e3b86f78c639d1a02c17ae4e265754a4ac",
+    "results/final/fMRI/GNN_BAG/fMRI_GNN_BAG_CN_OOF_predictions.csv": "306ee2529a26a56b0e880beff8f7b6d79f208e9904ad26a1f6ffc39c5c18e65b",
+    "results/final/DWI/GNN_BAG/DWI_GNN_BAG_CN_OOF_predictions.csv": "cf373493f2e01bbcf05d3c5b4fb4f1ec726b3c6f87b1e7a7412e432bf2f143bd"
+  },
+  "limitations": [
+    "Upstream ComBat used all scans and age covariates; this is not fold-contained harmonization.",
+    "Intervals condition on fitted models and existing model/threshold selection; no model-retraining uncertainty or significance claim.",
+    "HABS paired benchmark has only 13 participants; ADDecode has no saved CN OOF predictions for any model.",
+    "Slide snapshots preserve displayed historical values; IG tables describe reconstructed models, not verified original checkpoints.",
+    "CSV and HTML retain exact slide-table Unicode; PDF mathematical glyph support depends on installed fonts."
+  ]
+}

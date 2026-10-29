@@ -1,0 +1,6 @@
+Section,Primary saved evidence
+Harmonization,final/Fusion/report_tables/Table3_harmonization.csv
+DWI single modality,"final/DWI/{Ridge_BAG,GNN_BAG}/*summary*.json / *metrics.json"
+fMRI single modality,"final/fMRI/{Ridge_BAG,GNN_BAG}"
+Shared fusion benchmark,"final/Fusion/report_tables/Table1,4,5,6*.csv"
+Interpretability,explore/GNN_attribution/*.csv; analysis_summary.json

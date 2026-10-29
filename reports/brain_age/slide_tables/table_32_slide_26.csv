@@ -1,0 +1,5 @@
+Modality / model,CN scans,MAE (yr),RMSE (yr),R²,Pearson r
+DWI Ridge,916,5.98,7.89,0.519,0.724
+DWI GNN (top 50%),916,7.56,9.61,0.287,0.537
+fMRI Ridge,642,7.33,9.49,0.406,0.637
+fMRI GNN (top 10%),642,9.31,11.97,0.056,0.305

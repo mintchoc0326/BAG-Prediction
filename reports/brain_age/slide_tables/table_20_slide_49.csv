@@ -1,0 +1,6 @@
+Quality check,Observed result
+IG integration steps,64 initially; up to 512
+Completeness tolerance,0.05 years
+Scans failing completeness,6 / 387 (1.6%)
+Maximum absolute IG residual,0.119 years
+Maximum difference from original OOF prediction,13.18 years

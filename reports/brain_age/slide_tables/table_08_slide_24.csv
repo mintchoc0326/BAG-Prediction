@@ -1,0 +1,7 @@
+Symbol / object,Definition and dimension,How to interpret it
+"v,u; N(v); Eᵣ",ROI nodes; neighbors of v; selected edge set,Use r for retained fraction to distinguish it from a participant index.
+hᵥ⁽⁰⁾; hᵥ⁽ˡ⁾,84-value connectivity row; layer-l embedding,h⁽⁰⁾ ∈ ℝ⁸⁴; hidden vectors ∈ ℝ⁶⁴; three GINE layers.
+eᵤᵥ; Wₗ,Scalar edge weight; learned edge projection,Project scalar edges to the current node-feature dimension before addition.
+mᵥ⁽ˡ⁾; εₗ,Summed neighbor message; self-feature coefficient,ε is fixed at PyG default zero; the MLP transforms self + neighbor information.
+g; Head(g),64-value mean-pooled graph embedding; scalar output,Regressor: 64 → 32 → 1. Its output is standardized age.
+μᵧ; σᵧ; ŷ,Training age mean / SD; predicted age in years,MSE trains standardized age; grouped inner validation selects epochs.

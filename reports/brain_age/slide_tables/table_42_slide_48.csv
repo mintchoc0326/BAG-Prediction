@@ -1,0 +1,7 @@
+Symbol / object,Definition and dimension,How to interpret it
+"Aₛ,ᵢⱼ; p; Vₚ",Scan connection IG; participant; participant visits,"i,j now index ROI endpoints; s indexes scans to avoid an index collision."
+A node; A edge,Node-profile attribution; edge-attribute attribution,Sum both symmetric node entries and both directed edge entries for each pair.
+"Āₚ,ᵢⱼ; Iᵢⱼ",Signed visit average; mean participant absolute score,"Average signed scan values first, then take absolute values across participants."
+ROIᵢ,"½ Σⱼ≠ᵢ Iᵢⱼ, in attribution years",Each connection contributes half its absolute importance to each endpoint.
+rank; top-k frequency,Per-fold ranking; count of folds in top k,k = 100 for connections; k = 10 for ROIs; frequency ranges from 0 to 5.
+"x₋ₘ,x′ₘ; ΔMAEₘ",Keep other input; replace modality m; error change,"Average within participant, then across participants; positive = worse prediction."

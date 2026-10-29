@@ -1,0 +1,7 @@
+Symbol / object,Definition and dimension,How to interpret it
+D; F,Superscripts for DWI and fMRI,Superscripts identify modalities; they are not mathematical powers.
+keyᵢ,Dataset / participant / normalized visit key,Key agreement does not establish acquisition-date proximity.
+dᵢ; τ,Absolute age disagreement; tolerance τ = 0.01 yr,Exclude unresolved ages from training; do not silently replace them.
+CNᴰ; CNᶠ,Modality-specific cognitively normal indicators,DWI HABS all-CN override is retained; fMRI requires explicit CN.
+∧; sex_ok,Logical AND; no explicit sex disagreement,Every required condition must hold; missing sex is allowed in this model.
+n; P; q(i),387 scans; 330 participants; scan-to-participant map,Pairing yields 847 scans; policy and consistency filters define the evaluated subset.

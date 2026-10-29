@@ -1,0 +1,6 @@
+Connection (fMRI),Mean |IG| (yr),Folds in top 100
+lh_precuneus ↔ rh_precuneus,0.415,5/5
+lh_entorhinal ↔ rh_entorhinal,0.233,5/5
+lh_isthmuscingulate ↔ lh_precuneus,0.195,5/5
+lh_inferiorparietal ↔ lh_precuneus,0.183,3/5
+lh_insula ↔ rh_insula,0.170,5/5

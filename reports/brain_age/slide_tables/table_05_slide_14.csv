@@ -1,0 +1,7 @@
+Symbol / object,Definition and dimension,How to interpret it
+X; μ; V₂,Feature matrix; column means; two PCA loadings,T = (X−μ)V₂ is n × 2; separate before/after fits need not share axes.
+K; recallₖ,Number of classes; TPₖ/(TPₖ+FNₖ),Balanced accuracy averages sensitivity equally across classes.
+yᵢ; ŷᵢ; ȳ,Actual age; estimated age; evaluation mean,Age and age errors are measured in years.
+MAE; RMSE,Mean absolute error; root mean squared error,MAE = mean |ŷ−y|; RMSE = sqrt(mean (ŷ−y)²).
+R²,1 − residual sum of squares / total sum of squares,R² < 0 means worse squared error than predicting the evaluation mean.
+Target-specific n,Eligible scans for each diagnostic target,Sample sizes and class counts differ; do not interpret all rows as one set.

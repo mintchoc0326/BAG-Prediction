@@ -1,0 +1,7 @@
+Symbol / object,Definition and dimension,How to interpret it
+Zᴰ; Zᶠ,DWI and fMRI standardized edge vectors,"Each has 3,486 columns; fit modality columns using training data only."
+[ ; ]; Zᴱ,Feature concatenation; early-fusion vector,"Zᴱ = [Zᴰ;Zᶠ] contains 6,972 features."
+w; Zᵂ,fMRI block scale; weighted concatenation,Zᵂ=[Zᴰ;wZᶠ]; DWI scale is one; w is not a contribution percentage.
+λ*; w*,Penalty and weight jointly selected by inner CV,"Search w ∈ {0,0.25,0.5,1,2,4}; λ is Ridge alpha."
+β; b,"6,972 edge coefficients; scalar intercept",Only β is penalized; never standardize again after block weighting.
+ŷᴰ; ŷᶠ; ŷlate,Two unimodal OOF ages; arithmetic mean,"Late fusion averages predictions in years, not coefficients or embeddings."

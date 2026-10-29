@@ -1,0 +1,7 @@
+Symbol / object,Definition and dimension,How to interpret it
+rᵢⱼ; zᵢⱼ,Correlation; Fisher-z feature,"r is clipped inside (−1,1); z = arctanh(r)."
+cᵢ; βⱼ,Covariate design vector; edge coefficients,Age is continuous; sex and diagnosis are categorical design columns.
+αⱼ; b(i),Feature intercept; dataset/site batch index,Each eligible scan belongs to one batch; singleton batches are removed.
+γᵦⱼ; δᵦⱼ,Batch shift; batch scale,Adjustment removes modeled technical location and scale effects.
+σⱼ; γ*; δ*,Residual SD; empirical Bayes batch estimates,The detailed ComBat diagram shows standardization and reconstruction.
+zᴴ; rᴴ,Adjusted z feature; adjusted correlation,rᴴ = tanh(zᴴ); reconstruct an 84 × 84 symmetric matrix with diagonal 1.

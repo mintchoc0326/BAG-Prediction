@@ -1,0 +1,7 @@
+Symbol / object,Definition and dimension,How to interpret it
+i; n,Scan index; number of eligible scans,A participant may contribute multiple visits; i is not a participant index.
+N; Aᵢ,N = 84 ROIs; Aᵢ is 84 × 84,"A matrix entry is connectivity between two ROIs, not a regional volume."
+vecᵤ; xᵢ,Upper triangle; xᵢ ∈ ℝ³⁴⁸⁶,Take each unordered ROI pair once; omit the diagonal.
+d; X,"d = N(N−1)/2 = 3,486; X is n × d",Rows are scans; columns refer to the same ROI pair across scans.
+q(i); visit(i),Participant identifier; visit identifier,q(i) defines grouping in cross-validation; visits remain together.
+b(i); cᵢ,Technical batch; biological design vector,b(i) combines dataset and site; cᵢ encodes covariates to preserve.

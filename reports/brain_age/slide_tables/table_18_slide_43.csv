@@ -1,0 +1,7 @@
+Symbol / object,Definition and dimension,How to interpret it
+f; x; x′,Saved outer-fold age predictor; observed input; reference,f outputs age years; x jointly contains both modalities’ node and edge attributes.
+x′ node / edge,Training-mean node values; zero edge attributes,Node mean corresponds to standardized zero; keep observed diagonal fixed.
+k; t; x(t),Input coordinate; path fraction; interpolated input,"k is not a fold; t ∈ [0,1]; x(t)=x′+t(x−x′); topology is unchanged."
+∂f/∂xₖ; IGₖ,Local model sensitivity; integrated contribution,"IG has age-year units; it explains f(x)−f(x′), not a causal effect."
+S; rIG,Integration intervals; completeness residual,"Trapezoidal quadrature; S = 64 initially, adapt up to 512; |rIG| ≤ 0.05 yr."
+Δpred; rIG,Prediction consistency vs integration error,Require inference/checkpoint difference ≤ 0.001 yr; IG completeness is assessed separately.

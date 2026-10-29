@@ -1,0 +1,4 @@
+Cohort,CN scans,DWI Ridge MAE,Weighted Ridge MAE,GNN fusion MAE
+ADNI,131,7.15,6.85,8.91
+ADRC,243,6.52,6.39,9.04
+HABS,13,4.12,4.16,11.24

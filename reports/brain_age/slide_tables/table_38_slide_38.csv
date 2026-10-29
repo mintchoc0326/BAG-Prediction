@@ -1,0 +1,7 @@
+Symbol / object,Definition and dimension,How to interpret it
+Hₘ⁽⁰⁾; m,"Node input matrix; modality m ∈ {D,F}","84 × 84 input per modality; DWI log1p weights, fMRI signed correlations."
+"Eₘ; eᵤᵥ,ₘ",Positive top-50% topology; normalized scalar weight,e = selected positive weight / graph positive maximum; bidirectional edges.
+Hₘ⁽ˡ⁾; gₘ,ROI embeddings; pooled modality vector,"Two GINE layers, hidden 32; mean+max pooling makes gₘ ∈ ℝ⁶⁴."
+g=[gᴰ;gᶠ],Concatenated fusion representation ∈ ℝ¹²⁸,A separate encoder is learned for each modality; weights are not shared.
+Head; μᵧ; σᵧ,128→32→1 MLP; training age mean and SD,Head predicts standardized age; multiply by σᵧ and add μᵧ for age years.
+"μₘ,j; σₘ,j",Training node-feature column statistics,Pool training graph nodes per modality; fresh outer refit follows inner epoch selection.
