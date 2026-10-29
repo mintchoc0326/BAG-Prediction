@@ -15,7 +15,7 @@ The current workflow includes NeuroCombat harmonization, Ridge regression, graph
 | `results/README.md` | Local output layout and provenance notes |
 | `requirements.txt` | Direct Python dependencies for the analysis scripts |
 
-Historical notebooks and scripts remain in the local `code/explore/` directory and are excluded from this repository. Current Python scripts are authoritative. Local compatibility symlinks are also excluded.
+Historical local notebooks and scripts remain excluded from this repository, except for the three scripts previously published on GitHub, which are preserved in `code/explore/github_legacy/`. These archived scripts are not current entry points. Current Python scripts are authoritative. Local compatibility symlinks are also excluded.
 
 ## Environment
 
