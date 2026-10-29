@@ -199,7 +199,10 @@ def plot_benchmark(summary, output):
              ha='center', fontsize=10)
     fig.tight_layout(rect=[0,.075,1,.88])
     for ext in ['png','pdf','svg']:
-        fig.savefig(output/f'paired_model_performance.{ext}', dpi=220)
+        target=output/f'paired_model_performance.{ext}'
+        fig.savefig(target, dpi=220)
+        if ext=='svg':
+            target.write_text('\n'.join(line.rstrip() for line in target.read_text().splitlines())+'\n')
     plt.close(fig)
 
 
