@@ -1,0 +1,13 @@
+# Direct dependencies inferred from current source; versions are not locked.
+# Select torch / torch-geometric builds for your CPU or CUDA environment.
+numpy
+pandas
+scipy
+scikit-learn
+matplotlib
+joblib
+neuroCombat
+ipython
+torch
+torch-geometric
+openpyxl

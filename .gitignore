@@ -1,0 +1,30 @@
+# Publish documentation and reviewed current source only.
+/*
+!/.gitignore
+!/README.md
+!/requirements.txt
+!/code/
+!/data/
+!/results/
+/code/*
+!/code/final/
+!/code/tools/
+/code/final/**
+!/code/final/**/*.py
+!/code/final/**/*.md
+!/code/final/**/requirements.txt
+!/code/final/slides/
+/code/tools/*
+!/code/tools/*.py
+/data/*
+!/data/README.md
+/results/*
+!/results/README.md
+# Never track caches, notebooks, credentials or environments.
+**/__pycache__/
+*.py[cod]
+*.ipynb
+.env
+.env.*
+*.pem
+*.key
