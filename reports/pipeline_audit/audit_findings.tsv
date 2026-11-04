@@ -1,0 +1,11 @@
+ID	Status	Finding	Source	Next action
+DWI-01	Confirmed	ComBat fit globally before grouped CV	code/final/run_DWI_harmonization.py:2638; code/final/GNN_DWI_BAG.py:46	Fit and apply harmonization inside inner and outer training splits; validate transform semantics
+DWI-02	Confirmed	Finite/nonconstant feature mask uses whole sample	code/final/run_DWI_harmonization.py:2226	Fit data-dependent mask on training rows; define held-out invalid-value handling
+DWI-03	Confirmed	Graph threshold selected using same OOF scores reported as performance	code/final/GNN_DWI_BAG.py:940-1016	Move threshold and architecture choice inside outer training
+DWI-04	Confirmed, interpretation-dependent	True age preserved; diagnosis conditionally preserved	code/final/run_DWI_harmonization.py:2416-2675	Define age-conditioned target; avoid diagnosis-preserving primary transform for diagnosis association analysis
+DWI-05	Safeguard present; data verification pending	Outer GroupKFold and grouped early stopping; ID parser removes only terminal _Y<number>	code/final/GNN_DWI_BAG.py:145-155,710-753	Audit canonical participant and visit IDs; assert no group overlap
+DWI-06	Safeguard present	Age target mean and SD learned from training subset	code/final/GNN_DWI_BAG.py:570-600	Preserve this behavior
+DWI-07	Confirmed	Full per-epoch train/validation curves not persisted in fit_one_fold	code/final/GNN_DWI_BAG.py:617-655	Add epoch-level loss and eval-mode train/validation MAE logging before capacity experiments
+DWI-08	Confirmed	CN OOF age-bias trend applied to final-model BAG; CN final predictions are in-sample	code/final/GNN_DWI_BAG.py:1140-1188	Use held-out predictions and training-reference calibration for evaluated clinical subjects
+DWI-09	Verification pending	HABS CN status overridden at dataset level	code/final/GNN_DWI_BAG.py:63-65	Verify underlying diagnosis evidence before defining reference population
+DWI-10	Implementation limitation	Matrix export asserts full 3486-edge vector although upstream QC can remove edges	code/final/run_DWI_harmonization.py:2243-2253,2890-2950	Preserve edge indices and define reconstruction explicitly when masks remove edges

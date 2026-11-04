@@ -79,3 +79,9 @@ python code/reporting/build_results_report.py --tables-only --output /tmp/bag-sl
 ```
 
 See [`reports/brain_age/README.md`](reports/brain_age/README.md) for data sources, confidence intervals, model definitions, and limitations. Only aggregate reports are published; individual predictions remain local. Presentation tables are embedded display-value snapshots, not automatic recomputations of every historical analysis.
+
+## Pipeline audit and meeting slides
+
+See [`reports/pipeline_audit/`](reports/pipeline_audit/README.md) for the DWI source audit, evidence inventory, editable PowerPoint and PDF preview, and rebuild instructions. These reviewed meeting artifacts are explicitly published; other local presentations remain excluded. The proposed fold-contained pipeline has not yet been implemented or evaluated.
+
+To redraw only the model comparison figure from aggregate metrics, run `python code/reporting/plot_model_comparison.py`. See [`reports/brain_age/README.md`](reports/brain_age/README.md) for styling options.

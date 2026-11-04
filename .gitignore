@@ -59,3 +59,13 @@
 !/reports/brain_age/slide_tables/
 /reports/brain_age/slide_tables/*
 !/reports/brain_age/slide_tables/*.csv
+
+# Reviewed source-only pipeline audit and editable meeting slides.
+!/reports/pipeline_audit/
+/reports/pipeline_audit/*
+!/reports/pipeline_audit/README.md
+!/reports/pipeline_audit/build_slides.py
+!/reports/pipeline_audit/requirements.txt
+!/reports/pipeline_audit/audit_findings.tsv
+!/reports/pipeline_audit/DWI_pipeline_audit_editable.pptx
+!/reports/pipeline_audit/DWI_pipeline_audit_editable.pdf
