@@ -36,3 +36,15 @@ python code/reporting/build_results_report.py --bootstrap 3000 --seed 20261029
 ```
 
 The full run requires the private OOF CSVs at the paths documented in `provenance.json`. It does not retrain or modify model outputs. Use `--output /some/directory` to choose a different destination.
+
+## Restyle the comparison figure
+
+To redraw PNG, PDF and editable-text SVG from the existing aggregate metrics, without private prediction data or model training:
+
+```bash
+python code/reporting/plot_model_comparison.py
+# Optional: hide confidence intervals
+python code/reporting/plot_model_comparison.py --no-ci --output /tmp/model_comparison_no_ci
+```
+
+Edit `MODEL_STYLES`, `FIGSIZE`, and `FONT_SIZE` in that script to change colors, labels, and layout. The palette follows blue, yellow, red, green, purple, orange; bars use solid fills. The full report builder uses the same plotting function. The HTML report references the regenerated SVG. Figure styling does not alter metric values or the scientific limitations above.
