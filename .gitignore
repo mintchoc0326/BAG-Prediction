@@ -69,3 +69,41 @@
 !/reports/pipeline_audit/audit_findings.tsv
 !/reports/pipeline_audit/DWI_pipeline_audit_editable.pptx
 !/reports/pipeline_audit/DWI_pipeline_audit_editable.pdf
+
+# Unified predictive pipeline source/configuration; runtime inputs stay in results/.
+!/code/run_pipeline.py
+!/code/test_pipeline.py
+!/code/brainage_pipeline/
+/code/brainage_pipeline/**
+!/code/brainage_pipeline/*.py
+!/code/brainage_pipeline/README.md
+!/code/brainage_pipeline/configs/
+!/code/brainage_pipeline/configs/*.json
+
+# Reviewed aggregate current reports and editable slides; no individual records.
+!/reports/new_pipeline/
+/reports/new_pipeline/**
+!/reports/new_pipeline/**/
+!/reports/new_pipeline/**/*.html
+!/reports/new_pipeline/**/*.md
+!/reports/new_pipeline/**/*.csv
+!/reports/new_pipeline/**/*.json
+!/reports/new_pipeline/**/*.png
+!/reports/new_pipeline/**/*.svg
+!/reports/new_pipeline/**/*.pdf
+!/reports/new_pipeline/**/*.pptx
+/reports/new_pipeline/**/*private*
+
+# Published presentation exports; source data and runtime results remain local.
+!/reports/brain_age/slides/
+/reports/brain_age/slides/*
+!/reports/brain_age/slides/*.pptx
+!/reports/brain_age/slides/*.pdf
+!/reports/pipeline_audit/foldwise_validation_20261106/
+/reports/pipeline_audit/foldwise_validation_20261106/*
+!/reports/pipeline_audit/foldwise_validation_20261106/*.pptx
+!/reports/pipeline_audit/foldwise_validation_20261106/*.pdf
+!/reports/pipeline_audit/fmri_foldwise_validation_20261106/
+/reports/pipeline_audit/fmri_foldwise_validation_20261106/*
+!/reports/pipeline_audit/fmri_foldwise_validation_20261106/*.pptx
+!/reports/pipeline_audit/fmri_foldwise_validation_20261106/*.pdf

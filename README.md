@@ -4,6 +4,28 @@ Research pipelines for brain-age prediction and brain-age gap (BAG) analysis usi
 
 The current workflow includes NeuroCombat harmonization, Ridge regression, graph neural networks (GNNs), multimodal fusion, and checkpoint-based attribution.
 
+
+## Current predictive evaluation
+
+Use [`code/run_pipeline.py`](code/run_pipeline.py) for new analyses. The shared implementation, exact commands and scientific limits are documented in [`code/brainage_pipeline/README.md`](code/brainage_pipeline/README.md). See [`reports/new_pipeline/README.md`](reports/new_pipeline/README.md) for published slides and the local report locations.
+
+The original standalone harmonization/model scripts remain for historical reproduction. Their full-sample-ComBat benchmark must not be treated as the current strict prediction evaluation. Full-budget nested GINE, training-size studies and verified clinical analyses are distinct from the completed Ridge benchmark and short-budget GINE software validation.
+
+## Code, reports and presentations
+
+| Purpose | Location |
+| --- | --- |
+| Current pipeline and configuration | [`code/brainage_pipeline/`](code/brainage_pipeline/README.md), [`code/run_pipeline.py`](code/run_pipeline.py) |
+| Current report hub | [`reports/new_pipeline/README.md`](reports/new_pipeline/README.md) |
+| Current methods slides | [PowerPoint](reports/new_pipeline/slides/Unified_pipeline_editable.pptx), [PDF](reports/new_pipeline/slides/Unified_pipeline_editable.pdf) |
+| GINE study and comparison slides | [PowerPoint](reports/new_pipeline/gine_study/GINE_comparison_editable.pptx), [PDF](reports/new_pipeline/gine_study/GINE_comparison_editable.pdf) |
+| Original DWI audit | [`reports/pipeline_audit/`](reports/pipeline_audit/README.md), [PowerPoint](reports/pipeline_audit/DWI_pipeline_audit_editable.pptx), [PDF](reports/pipeline_audit/DWI_pipeline_audit_editable.pdf) |
+| Foldwise DWI validation | [PowerPoint](reports/pipeline_audit/foldwise_validation_20261106/DWI_foldwise_validation_editable.pptx), [PDF](reports/pipeline_audit/foldwise_validation_20261106/DWI_foldwise_validation_editable.pdf) |
+| Foldwise fMRI validation | [PowerPoint](reports/pipeline_audit/fmri_foldwise_validation_20261106/fMRI_foldwise_validation_editable.pptx), [PDF](reports/pipeline_audit/fmri_foldwise_validation_20261106/fMRI_foldwise_validation_editable.pdf) |
+| Historical results presentation | [PowerPoint](reports/brain_age/slides/Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx), [PDF](reports/brain_age/slides/Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pdf) |
+
+The historical presentation retains its original evaluation scope. Use the current report hub and per-run status for updated evaluations. GitHub provides PowerPoint and PDF downloads. Generated HTML/CSV reports remain local and are not part of this code-and-slides publication.
+
 ## Repository layout
 
 | Path | Purpose |
@@ -31,9 +53,9 @@ This dependency list is not a locked environment and does not guarantee numerica
 
 Datasets are not distributed with this repository. Obtain the necessary permissions separately and place local inputs under `data/final/{ADNI,HABS,ADRC,ADDecode}/`. Connectome, metadata, and atlas paths must match the configuration blocks in the scripts.
 
-Several scripts contain the original absolute project path `/mnt/newStor/paros/paros_WORK/avery`. Before running on another machine, update their `ROOT`, `PROJECT_DIR`, and other path settings. Run commands from the repository root. There is no unified command-line interface; some scripts execute analysis when invoked and overwrite their configured outputs.
+Several scripts contain the original absolute project path `/mnt/newStor/paros/paros_WORK/avery`. Before running on another machine, update their `ROOT`, `PROJECT_DIR`, and other path settings. Run commands from the repository root. The historical scripts do not share a unified command-line interface and can overwrite their configured outputs. Use `code/run_pipeline.py` for the current workflow.
 
-## Workflow
+## Historical workflow
 
 Run the stages in order after configuring inputs and paths:
 
@@ -82,6 +104,6 @@ See [`reports/brain_age/README.md`](reports/brain_age/README.md) for data source
 
 ## Pipeline audit and meeting slides
 
-See [`reports/pipeline_audit/`](reports/pipeline_audit/README.md) for the DWI source audit, evidence inventory, editable PowerPoint and PDF preview, and rebuild instructions. These reviewed meeting artifacts are explicitly published; other local presentations remain excluded. The proposed fold-contained pipeline has not yet been implemented or evaluated.
+See [`reports/pipeline_audit/`](reports/pipeline_audit/README.md) for the DWI source audit, evidence inventory, editable PowerPoint and PDF preview, and rebuild instructions. These reviewed meeting artifacts are explicitly published; other local presentations remain excluded. The original slides document the source-audit snapshot. Subsequent foldwise implementations and current evaluations are linked above; unresolved clinical and anatomical validation remains explicitly identified in their reports.
 
 To redraw only the model comparison figure from aggregate metrics, run `python code/reporting/plot_model_comparison.py`. See [`reports/brain_age/README.md`](reports/brain_age/README.md) for styling options.

@@ -7,20 +7,23 @@ from pptx.enum.shapes import MSO_SHAPE, MSO_CONNECTOR
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'reports/pipeline_audit'
 r = Presentation(); r.slide_width=Inches(13.333); r.slide_height=Inches(7.5)
-NAVY='16324F'; BLUE='E7EFF7'; RED='F9E3E1'; GREEN='E1F0E8'
-def box(s,x,y,w,h,text,fill=BLUE,size=21):
-    sh=s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x), Inches(y), Inches(w), Inches(h))
-    sh.fill.solid(); sh.fill.fore_color.rgb=RGBColor.from_string(fill); sh.line.color.rgb=RGBColor.from_string('BCCBDA')
-    tf=sh.text_frame; tf.word_wrap=True
+NAVY='111827'; TEXT='1F2937'; LINE='E5E7EB'; PANEL='FFFFFF'; SUBTLE='F9FAFB'; BLUE='FFFFFF'; RED='FFFFFF'; GREEN='FFFFFF'
+def box(s,x,y,w,h,text,fill=PANEL,size=21):
+    sh=s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x), Inches(y), Inches(w), Inches(h))
+    sh.fill.solid(); sh.fill.fore_color.rgb=RGBColor.from_string(fill); sh.line.color.rgb=RGBColor.from_string(LINE); sh.line.width = Pt(1)
+    tf=sh.text_frame; tf.word_wrap=True; tf.margin_left=Pt(10); tf.margin_right=Pt(10); tf.margin_top=Pt(6); tf.margin_bottom=Pt(6)
     for i,line in enumerate(text.split('\n')):
-        p=tf.paragraphs[0] if i==0 else tf.add_paragraph(); p.text=line; p.font.name='Aptos'; p.font.size=Pt(size); p.font.color.rgb=RGBColor.from_string(NAVY)
+        p=tf.paragraphs[0] if i==0 else tf.add_paragraph(); p.text=line; p.font.name='Aptos'; p.font.size=Pt(size); p.font.color.rgb=RGBColor.from_string(TEXT)
+        p.level=0; p.alignment=1
     return sh
 
 def slide(title,subtitle='Source audit | DWI | 03 November 2026 | No training rerun'):
     s=r.slides.add_slide(r.slide_layouts[6])
-    box(s,.35,.2,12.6,.7,title,NAVY,28)
-    for p in s.shapes[-1].text_frame.paragraphs: p.font.color.rgb=RGBColor(255,255,255)
+    s.background.fill.solid(); s.background.fill.fore_color.rgb=RGBColor.from_string('FFFFFF')
+    box(s,.35,.25,12.6,.7,title,'FFFFFF',28)
+    for p in s.shapes[-1].text_frame.paragraphs: p.font.color.rgb=RGBColor.from_string(NAVY); p.font.bold=True
     box(s,.35,7.02,12.6,.27,subtitle,'FFFFFF',10)
+    for p in s.shapes[-1].text_frame.paragraphs: p.font.color.rgb=RGBColor.from_string(TEXT)
     return s
 
 def arrow(s,x,y): box(s,x,y,.45,.5,'→','FFFFFF',24)
