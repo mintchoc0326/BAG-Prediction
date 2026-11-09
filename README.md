@@ -22,9 +22,9 @@ The original standalone harmonization/model scripts remain for historical reprod
 | Original DWI audit | [`reports/pipeline_audit/`](reports/pipeline_audit/README.md), [PowerPoint](reports/pipeline_audit/DWI_pipeline_audit_editable.pptx), [PDF](reports/pipeline_audit/DWI_pipeline_audit_editable.pdf) |
 | Foldwise DWI validation | [PowerPoint](reports/pipeline_audit/foldwise_validation_20261106/DWI_foldwise_validation_editable.pptx), [PDF](reports/pipeline_audit/foldwise_validation_20261106/DWI_foldwise_validation_editable.pdf) |
 | Foldwise fMRI validation | [PowerPoint](reports/pipeline_audit/fmri_foldwise_validation_20261106/fMRI_foldwise_validation_editable.pptx), [PDF](reports/pipeline_audit/fmri_foldwise_validation_20261106/fMRI_foldwise_validation_editable.pdf) |
-| Historical results presentation | [PowerPoint](reports/brain_age/slides/Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx), [PDF](reports/brain_age/slides/Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pdf) |
+| Comprehensive updated presentation | [PowerPoint](reports/brain_age/slides/Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx), [PDF](reports/brain_age/slides/Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pdf) |
 
-The historical presentation retains its original evaluation scope. Use the current report hub and per-run status for updated evaluations. GitHub provides PowerPoint and PDF downloads. Generated HTML/CSV reports remain local and are not part of this code-and-slides publication.
+The comprehensive presentation covers the revised pipeline and current aggregate results, with historical figures explicitly separated into an appendix. Use the current report hub and per-run status for updated evaluations. GitHub provides PowerPoint and PDF downloads. Generated HTML/CSV reports remain local and are not part of this code-and-slides publication.
 
 ## Repository layout
 
