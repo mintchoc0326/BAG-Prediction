@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Historical workflow: retain for reproduction; use code/run_pipeline.py for new predictive evaluation.
 """Matched-sample DWI/fMRI Ridge baselines, early fusion and mean late fusion.
 
 Run: python code/Ridge_DWI_fMRI_fusion.py

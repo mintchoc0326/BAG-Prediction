@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Historical workflow: retain for reproduction; use code/run_pipeline.py for new predictive evaluation.
 """Supplementary two-branch GNN with matched-sample unimodal controls.
 
 Uses Weighted_Ridge's exact CN scans and outer folds. Graph thresholds are

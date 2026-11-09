@@ -11,3 +11,6 @@ ipython
 torch
 torch-geometric
 openpyxl
+
+# Optional verified clinical association stage
+statsmodels

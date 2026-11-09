@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Historical workflow: retain for reproduction; use code/run_pipeline.py for new predictive evaluation.
 
 """
 fMRI GNN brain-age prediction with threshold selection.

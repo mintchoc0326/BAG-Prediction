@@ -10,3 +10,7 @@ python code/tools/reconcile_slides.py
 ```
 
 Install Python dependencies from requirements.txt if needed. Final PPTX/PDF exports are in results/presentation. After rebuilding PPTX, export PDF with LibreOffice. The separate-equation layout superseded by boxed equations is archived in code/explore/slides/.
+
+## Presentation formatting
+
+After building or reconciling decks, run `python code/tools/restyle_slides.py` from the repository root. This applies the shared formal style to all report/presentation PPTX files while verifying unchanged text, notes, chart values, embedded media and relationships. Originals are backed up under `.local/slide_format_backups/`; verification is recorded in `reports/slide_format_validation.json`. Re-export the matching PDFs after formatting.

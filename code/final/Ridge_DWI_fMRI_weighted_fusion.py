@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Historical workflow: retain for reproduction; use code/run_pipeline.py for new predictive evaluation.
 """Run weighted feature fusion, including matched-sample baselines.
 
 Works in a terminal or VS Code Interactive. Outputs go to Weighted_Ridge.

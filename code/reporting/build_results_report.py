@@ -259,7 +259,7 @@ def main():
                     status='Available' if len(found) else 'Not available in saved CN OOF predictions'))
     pd.DataFrame(availability).to_csv(output/'model_availability.csv',index=False)
     plot_benchmark(primary,output)
-    body=['<h1>Brain-age prediction performance</h1><p>Raw CN OOF predictions; common paired benchmark. Ridge fusion means weighted early fusion. Additional fusion variants appear in the CSV.</p><img src="paired_model_performance.svg">']
+    body=['<p><strong>Historical benchmark:</strong> full-sample harmonization was used upstream. <a href="../new_pipeline/index.html">Open the current fold-contained pipeline report</a>.</p><h1>Brain-age prediction performance</h1><p>Raw CN OOF predictions; common paired benchmark. Ridge fusion means weighted early fusion. Additional fusion variants appear in the CSV.</p><img src="paired_model_performance.svg">']
     markdown=['# Brain-age prediction performance','', 'Raw CN OOF predictions; participant-cluster bootstrap 95% confidence intervals. Ridge fusion = weighted early fusion.','']
     with PdfPages(output/'performance_tables.pdf') as pdf:
         for cohort in [*sorted(set(primary.dataset.unique())-{'Pooled'}),'Pooled']:

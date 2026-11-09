@@ -1,0 +1,12 @@
+{
+  "source_csv": "LOCAL_VERIFIED_IMAGING_LINKED_CLINICAL_TABLE.csv",
+  "source_verified": false,
+  "visit_alignment_verified": false,
+  "variables": {
+    "cognitive_status": {"column": "diagnosis", "kind": "categorical", "levels": ["CN", "MCI", "AD"], "mapping": {"CN":"CN","MCI":"MCI","AD":"AD"}, "verified": false},
+    "APOE4": {"column": "APOE4_carrier", "kind": "categorical", "levels": ["noncarrier", "carrier"], "mapping": {"0":"noncarrier","1":"carrier"}, "verified": false},
+    "sex": {"column": "sex", "kind": "categorical", "levels": ["F","M"], "mapping": {"F":"F","M":"M"}, "verified": false},
+    "T2D": {"column": "type2_diabetes", "kind": "categorical", "levels": ["no","yes"], "mapping": {"0":"no","1":"yes"}, "type2_definition_verified": false, "verified": false},
+    "HbA1c": {"column": "HbA1c", "kind": "continuous", "unit": "UNVERIFIED", "verified": false}
+  }
+}

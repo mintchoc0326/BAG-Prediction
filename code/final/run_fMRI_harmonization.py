@@ -1,3 +1,4 @@
+# Historical workflow: retain for reproduction; use code/run_pipeline.py for new predictive evaluation.
 from IPython.display import display
 # %%
 # GPU
