@@ -9,6 +9,8 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest="command", required=True)
     q = sub.add_parser("prepare")
+    q.add_argument("--root", type=Path, default=ROOT,
+                   help="Data root containing data/final and results/final input manifests")
     q.add_argument("--output", type=Path, required=True)
     q.add_argument("--min-cn", type=int, default=5)
     q.add_argument("--age-tolerance", type=float, default=0.01)
@@ -57,7 +59,7 @@ def main():
         from .data import prepare
 
         print(
-            prepare(ROOT, args.output, args.min_cn, args.age_tolerance).to_string(
+            prepare(args.root.resolve(), args.output, args.min_cn, args.age_tolerance).to_string(
                 index=False
             )
         )

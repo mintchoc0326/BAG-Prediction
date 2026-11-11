@@ -1,5 +1,5 @@
-# Direct dependencies inferred from current source; versions are not locked.
-# Select torch / torch-geometric builds for your CPU or CUDA environment.
+# Current pipeline, aggregate figures, editable slides and verified clinical interface.
+# Versions are not locked; choose torch/torch-geometric builds for your CPU/CUDA setup.
 numpy
 pandas
 scipy
@@ -7,10 +7,9 @@ scikit-learn
 matplotlib
 joblib
 neuroCombat
-ipython
 torch
 torch-geometric
+python-pptx
+Pillow
 openpyxl
-
-# Optional verified clinical association stage
 statsmodels

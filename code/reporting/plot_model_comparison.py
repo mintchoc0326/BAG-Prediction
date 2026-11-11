@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Plot cohort/model comparisons from aggregate CSV metrics (no training).
+"""Plot current participant-nested six-model cohort metrics (no training).
 
 Run from the repository root:
     python code/reporting/plot_model_comparison.py
@@ -23,26 +23,36 @@ ROOT = Path(__file__).resolve().parents[2]
 MODEL_STYLES = [
     ('DWI', 'Ridge–DWI', '#4878A8'),
     ('fMRI', 'Ridge–fMRI', '#C6A83E'),
-    ('WEIGHTED_EARLY_FUSION', 'Ridge–fusion (weighted)', '#BC5B58'),
-    ('DWI_GNN', 'GNN–DWI', '#59926C'),
-    ('fMRI_GNN', 'GNN–fMRI', '#8D74AA'),
-    ('GNN_FUSION', 'GNN–fusion', '#D08B4B'),
+    ('EARLY_FUSION', 'Ridge–fusion (early)', '#BC5B58'),
+    ('DWI_GINE_2X32', 'GINE–DWI (2×32)', '#59926C'),
+    ('fMRI_GINE_2X32', 'GINE–fMRI (2×32)', '#8D74AA'),
+    ('EARLY_FUSION_GINE_2X32', 'GINE–fusion (2×32)', '#D08B4B'),
 ]
 METRICS = [('MAE', 'A. MAE (years)'), ('RMSE', 'B. RMSE (years)'),
            ('R2', 'C. R²'), ('Pearson_r', 'D. Pearson r')]
-COHORT_ORDER = ['ADNI', 'ADRC', 'HABS', 'ADDECODE', 'ADDecode']
+COHORT_ORDER = ['ADNI', 'ADRC', 'HABS']
 FIGSIZE = (12, 8)
 FONT_SIZE = 10
 BAR_WIDTH = 0.125
 
 
-def plot_comparison(data, output, show_ci=True):
+def plot_comparison(data, output, show_ci=True, mode='age_mean'):
+    data = data.loc[data['mode'].eq(mode)].copy()
+    if data.empty:
+        raise ValueError(f'No aggregate results for mode {mode}')
+    data = data.rename(columns={'cohort': 'dataset', **{
+        metric + '_CI_' + end: metric + '_ci_' + end
+        for metric, _ in METRICS for end in ['low', 'high']}})
     cohorts = [c for c in COHORT_ORDER if c in data['dataset'].unique()]
     if not cohorts:
         raise ValueError('No recognized cohorts in input CSV.')
     indexed = data.set_index(['dataset', 'model'])
     if indexed.index.has_duplicates:
         raise ValueError('Expected one row per dataset/model.')
+    for cohort in cohorts:
+        rows = indexed.loc[[(cohort, model) for model, _, _ in MODEL_STYLES]]
+        if rows.n_scans.nunique() != 1 or rows.n_participants.nunique() != 1:
+            raise ValueError('Models must use identical matched cohort counts.')
     with plt.rc_context({'font.size': FONT_SIZE, 'font.family': 'sans-serif',
                          'font.sans-serif': ['Arial', 'Liberation Sans', 'DejaVu Sans'],
                          'axes.linewidth': .6, 'svg.fonttype': 'none',
@@ -76,7 +86,12 @@ def plot_comparison(data, output, show_ci=True):
         fig.legend(handles=[Patch(facecolor=c, label=l) for _, l, c in MODEL_STYLES],
                    loc='upper center', bbox_to_anchor=(.5, .995), ncol=3, frameon=False,
                    handlelength=1.3, handleheight=.8, columnspacing=2, fontsize=10)
-        fig.tight_layout(rect=[.015, .015, .995, .91], h_pad=2.2, w_pad=2.5)
+        label = 'Training-age mean-only ComBat' if mode == 'age_mean' else 'No ComBat'
+        reference = indexed.loc[[(c, MODEL_STYLES[0][0]) for c in cohorts]]
+        scans, participants = int(reference.n_scans.sum()), int(reference.n_participants.sum())
+        fig.text(.5, .012, label + f' · Participant-nested OOF · {scans} CN scans / {participants} participants',
+                 ha='center', fontsize=9, color='#555555')
+        fig.tight_layout(rect=[.015, .045, .995, .91], h_pad=2.2, w_pad=2.5)
         output.parent.mkdir(parents=True, exist_ok=True)
         for extension in ('png', 'pdf', 'svg'):
             target = output.with_suffix('.'+extension)
@@ -90,12 +105,13 @@ def plot_comparison(data, output, show_ci=True):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--input', type=Path,
-                        default=ROOT/'reports/brain_age/paired_metrics_six_models.csv')
+                        default=ROOT/'reports/current/paired_metrics_six_models.csv')
     parser.add_argument('--output', type=Path,
-                        default=ROOT/'reports/brain_age/paired_model_performance')
+                        default=ROOT/'reports/current/paired_model_performance')
+    parser.add_argument('--mode', choices=['age_mean', 'none'], default='age_mean')
     parser.add_argument('--no-ci', action='store_true', help='Hide confidence interval error bars')
     args = parser.parse_args()
-    plot_comparison(pd.read_csv(args.input), args.output, show_ci=not args.no_ci)
+    plot_comparison(pd.read_csv(args.input), args.output, show_ci=not args.no_ci, mode=args.mode)
 
 
 if __name__ == '__main__':

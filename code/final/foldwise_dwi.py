@@ -30,6 +30,7 @@ def load_eligible(root=ROOT, min_cn_participants=5, modality="DWI"):
     Cohort universe is the archived 1234-row DWI eligibility manifest, whose
     prior exclusions remain a limitation. No harmonized arrays are read.
     """
+    root = Path(root).resolve()
     if modality not in {"DWI", "fMRI"}:
         raise ValueError("Unsupported modality")
     relative = (
@@ -119,6 +120,9 @@ def load_eligible(root=ROOT, min_cn_participants=5, modality="DWI"):
         raise ValueError("No eligible rows")
     raw = []
     for path in eligible.filepath:
+        path = Path(path)
+        if not path.is_absolute():
+            path = root / path
         a = pd.read_csv(path, header=None).to_numpy(dtype=float)
         if a.shape != (84, 84):
             raise ValueError(f"Unexpected matrix shape at {path}")

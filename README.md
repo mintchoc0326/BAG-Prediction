@@ -1,109 +1,151 @@
 # Connectome Brain Age
 
-Research pipelines for brain-age prediction and brain-age gap (BAG) analysis using diffusion MRI (DWI) and functional MRI (fMRI) connectomes from ADNI, HABS, ADRC, and ADDecode.
+Current participant-nested brain-age prediction from DWI, signed fMRI and paired early fusion. Ridge is the primary baseline; GINE capacity and residual arms use the same paired population and participant folds.
 
-The current workflow includes NeuroCombat harmonization, Ridge regression, graph neural networks (GNNs), multimodal fusion, and checkpoint-based attribution.
+This branch contains the current implementation, its required support modules, configuration, tests and the current cohort-comparison figure. Historical model scripts, presentations and reports have been removed from this branch. Runtime data and earlier local work are not published.
 
-
-## Current predictive evaluation
-
-Use [`code/run_pipeline.py`](code/run_pipeline.py) for new analyses. The shared implementation, exact commands and scientific limits are documented in [`code/brainage_pipeline/README.md`](code/brainage_pipeline/README.md). See [`reports/new_pipeline/README.md`](reports/new_pipeline/README.md) for published slides and the local report locations.
-
-The original standalone harmonization/model scripts remain for historical reproduction. Their full-sample-ComBat benchmark must not be treated as the current strict prediction evaluation. Full-budget nested GINE, training-size studies and verified clinical analyses are distinct from the completed Ridge benchmark and short-budget GINE software validation.
-
-## Code, reports and presentations
-
-| Purpose | Location |
-| --- | --- |
-| Current pipeline and configuration | [`code/brainage_pipeline/`](code/brainage_pipeline/README.md), [`code/run_pipeline.py`](code/run_pipeline.py) |
-| Current report hub | [`reports/new_pipeline/README.md`](reports/new_pipeline/README.md) |
-| Current methods slides | [PowerPoint](reports/new_pipeline/slides/Unified_pipeline_editable.pptx), [PDF](reports/new_pipeline/slides/Unified_pipeline_editable.pdf) |
-| GINE study and comparison slides | [PowerPoint](reports/new_pipeline/gine_study/GINE_comparison_editable.pptx), [PDF](reports/new_pipeline/gine_study/GINE_comparison_editable.pdf) |
-| Original DWI audit | [`reports/pipeline_audit/`](reports/pipeline_audit/README.md), [PowerPoint](reports/pipeline_audit/DWI_pipeline_audit_editable.pptx), [PDF](reports/pipeline_audit/DWI_pipeline_audit_editable.pdf) |
-| Foldwise DWI validation | [PowerPoint](reports/pipeline_audit/foldwise_validation_20261106/DWI_foldwise_validation_editable.pptx), [PDF](reports/pipeline_audit/foldwise_validation_20261106/DWI_foldwise_validation_editable.pdf) |
-| Foldwise fMRI validation | [PowerPoint](reports/pipeline_audit/fmri_foldwise_validation_20261106/fMRI_foldwise_validation_editable.pptx), [PDF](reports/pipeline_audit/fmri_foldwise_validation_20261106/fMRI_foldwise_validation_editable.pdf) |
-| Comprehensive updated presentation | [PowerPoint](reports/brain_age/slides/Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pptx), [PDF](reports/brain_age/slides/Connectome_Brain_Age_Results_English_Editable_with_Pipelines.pdf) |
-
-The comprehensive presentation covers the revised pipeline and current aggregate results, with historical figures explicitly separated into an appendix. Use the current report hub and per-run status for updated evaluations. GitHub provides PowerPoint and PDF downloads. Generated HTML/CSV reports remain local and are not part of this code-and-slides publication.
-
-## Repository layout
+## Repository map
 
 | Path | Purpose |
 | --- | --- |
-| `code/final/` | Current harmonization, brain-age, fusion, and attribution Python scripts |
-| `code/final/slides/` | Presentation-generation scripts and their dependencies |
-| `code/tools/` | PCA plots, figure maintenance, and local validation utilities |
-| `data/README.md` | Local data layout and access expectations |
-| `results/README.md` | Local output layout and provenance notes |
-| `requirements.txt` | Direct Python dependencies for the analysis scripts |
+| `code/run_pipeline.py` | Main entry point for all current stages |
+| `code/brainage_pipeline/` | Preparation, participant splits, preprocessing, Ridge/GINE evaluation, calibration, audits and downstream analysis |
+| `code/brainage_pipeline/configs/` | Ridge, GINE capacities, short validation and clinical-specification configurations |
+| `code/final/` | Required fit/apply harmonization, input-loader and grouped-split support; retained module names preserve saved-checkpoint compatibility |
+| `code/reporting/plot_model_comparison.py` | Rebuild the cohort four-panel figure using published aggregate metrics |
+| `code/reporting/export_paired_metrics.py` | Export current aggregates from audited original Ridge/GINE OOF runs |
+| `code/reporting/` | Current study orchestration, summary and clinical-inventory utilities |
+| `docs/data_format.md` | Required private inputs, column names and matrix format |
+| `reports/current/` | Current six-model aggregate metrics, figure exports and provenance |
 
-Historical local notebooks and scripts remain excluded from this repository, except for the three scripts previously published on GitHub, which are preserved in `code/explore/github_legacy/`. These archived scripts are not current entry points. Current Python scripts are authoritative. Local compatibility symlinks are also excluded.
+## 1. Install
 
-## Environment
-
-Use a separate Python environment. Install PyTorch and PyTorch Geometric builds appropriate for your CPU/CUDA environment, then install the remaining dependencies:
+Python 3.10 or newer is recommended. From the repository root:
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
+python code/run_pipeline.py --help
 ```
 
-This dependency list is not a locked environment and does not guarantee numerical reproduction. The source has been syntax-checked; a clean installation and complete training run have not been validated. Presentation tooling has additional dependencies in `code/final/slides/requirements.txt` and may require external applications.
+Select a PyTorch build appropriate for your CPU/CUDA environment before installing the remaining dependencies if GPU support is required. CUDA is optional; the GINE implementation selects CUDA when available. Dependencies are not locked, so a fresh installation is not a guarantee of bitwise GPU reproduction. PPTX generation uses python-pptx; optional PDF conversion additionally requires LibreOffice.
 
-## Data and paths
+## 2. Prepare authorized private inputs
 
-Datasets are not distributed with this repository. Obtain the necessary permissions separately and place local inputs under `data/final/{ADNI,HABS,ADRC,ADDecode}/`. Connectome, metadata, and atlas paths must match the configuration blocks in the scripts.
+Read [the input specification](docs/data_format.md) first. Raw imaging, participant metadata and the eligible-scan manifests are not distributed. The loader reads raw 84-by-84 connectome CSV files listed in private manifests; it does not use globally harmonized arrays as model inputs.
 
-Several scripts contain the original absolute project path `/mnt/newStor/paros/paros_WORK/avery`. Before running on another machine, update their `ROOT`, `PROJECT_DIR`, and other path settings. Run commands from the repository root. The historical scripts do not share a unified command-line interface and can overwrite their configured outputs. Use `code/run_pipeline.py` for the current workflow.
-
-## Historical workflow
-
-Run the stages in order after configuring inputs and paths:
-
-| Stage | Script in `code/final/` | Local output |
-| --- | --- | --- |
-| DWI harmonization | `run_DWI_harmonization.py` | `results/final/DWI/` |
-| fMRI harmonization | `run_fMRI_harmonization.py` | `results/final/fMRI/` |
-| DWI Ridge / GNN | `Ridge_GNN_BAG.py`, `GNN_DWI_BAG.py` | DWI `Ridge_BAG/`, `GNN_BAG/` |
-| fMRI Ridge / GNN | `Ridge_fMRI_BAG.py`, `GNN_fMRI_BAG.py` | fMRI `Ridge_BAG/`, `GNN_BAG/` |
-| Pairing and metadata audit | `prepare_DWI_fMRI_fusion_metadata.py` | `results/final/Fusion/metadata/` |
-| Ridge fusion | `Ridge_DWI_fMRI_fusion.py` | Fusion `Ridge_baseline/` |
-| Weighted Ridge fusion | `Ridge_DWI_fMRI_weighted_fusion.py` | Fusion `Weighted_Ridge/` |
-| GNN fusion | `GNN_DWI_fMRI_fusion.py` | Fusion `GNN_fusion/` |
-| Attribution | `GNN_BAG_interpretability.py` | Fusion `Attribution/` |
-| ROI order audit | `audit_connectome_roi_order.py` | Fusion `roi_order_audit/` |
-
-For example, these commands recompute the primary harmonization outputs:
+The preparation stage expects an input root containing `data/final/` and the two manifest paths documented below. It does not process DICOM/NIfTI or generate those manifests. Their archived eligibility restrictions remain a limitation.
 
 ```bash
-python code/final/run_DWI_harmonization.py
-python code/final/run_fMRI_harmonization.py
-python code/tools/plot_harmonization_pca_by_dataset.py
+python code/run_pipeline.py prepare \
+  --root /absolute/path/to/private-input-root \
+  --output results/current/prepared
 ```
 
-Attribution requires original outer-fold checkpoints and matching saved predictions. Those checkpoints were absent from the local project when this repository was prepared. Archived reconstructed-model attribution is not output from the current verified-checkpoint workflow.
+If inputs are placed in the documented paths inside this checkout, omit `--root`. Matrix paths may be absolute or relative to the private input root. Choose a new output directory when inputs or preparation rules change; an existing prepared directory is rejected.
 
-`fmri_bag_cv.py` and `fusion_transformers.py` provide shared model components. Some tools, including `validate_organization.py` and slide utilities, require local historical backups or presentation artifacts excluded from Git.
+Preparation performs unique clinical-key matching, CN/batch eligibility checks, raw matrix loading and conservative DWI/fMRI pairing. The default age agreement tolerance is 0.01 years. Conflicting metadata are excluded and recorded, rather than averaged or resolved by selecting the first duplicate row. Matching keys do not verify acquisition dates.
 
-## Publication scope
-
-Git tracks current source code and documentation only. Raw/derived data, participant metadata, predictions, checkpoints, presentations, caches, environment folders, historical notebooks, and audit backups remain local. `.gitignore` uses explicit allowlists for `code/`, `data/`, and `results/` to keep generated or participant-level files out of future commits.
-
-No dataset redistribution rights or software license are granted by this README. Add an appropriate license once the project owner has chosen one.
-
-## Reproduce the English tables and performance figure
-
-A single script, [`code/reporting/build_results_report.py`](code/reporting/build_results_report.py), computes MAE, RMSE, R², and Pearson r from existing raw CN out-of-fold predictions. It generates the six-model matched-cohort figure, aggregate tables, full-population unimodal supplements, and every native table from both reviewed slide decks.
+## 3. Run the nested Ridge baseline first
 
 ```bash
-python code/reporting/build_results_report.py
-# Reproduce the 46 presentation tables without private prediction files:
-python code/reporting/build_results_report.py --tables-only --output /tmp/bag-slide-tables
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python code/run_pipeline.py train \
+  --prepared results/current/prepared \
+  --output results/current/ridge \
+  --config code/brainage_pipeline/configs/ridge.json
+
+python code/run_pipeline.py audit --run results/current/ridge
+python code/run_pipeline.py report \
+  --run results/current/ridge --output results/current/ridge_report
 ```
 
-See [`reports/brain_age/README.md`](reports/brain_age/README.md) for data sources, confidence intervals, model definitions, and limitations. Only aggregate reports are published; individual predictions remain local. Presentation tables are embedded display-value snapshots, not automatic recomputations of every historical analysis.
+This runs five outer participant folds and three inner folds for DWI, fMRI and early fusion under no-ComBat and training-age mean-only ComBat. Ridge alpha is selected inside inner validation. Learned feature QC, harmonization and scaling are fitted on the corresponding training partition. All visits from a participant stay together.
 
-## Pipeline audit and meeting slides
+The default population is paired. `--population DWI` or `--population fMRI` provides a modality-wide supplement; those populations must not be presented as matched multimodal comparisons.
 
-See [`reports/pipeline_audit/`](reports/pipeline_audit/README.md) for the DWI source audit, evidence inventory, editable PowerPoint and PDF preview, and rebuild instructions. These reviewed meeting artifacts are explicitly published; other local presentations remain excluded. The original slides document the source-audit snapshot. Subsequent foldwise implementations and current evaluations are linked above; unresolved clinical and anatomical validation remains explicitly identified in their reports.
+## 4. Optional GINE evaluation
 
-To redraw only the model comparison figure from aggregate metrics, run `python code/reporting/plot_model_comparison.py`. See [`reports/brain_age/README.md`](reports/brain_age/README.md) for styling options.
+Use the fixed 2-by-32 arm for the six-model reference figure:
+
+```bash
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python code/run_pipeline.py train \
+  --prepared results/current/prepared \
+  --output results/current/gine_2x32 \
+  --config code/brainage_pipeline/configs/gine_2x32.json
+
+python code/run_pipeline.py audit --run results/current/gine_2x32
+python code/run_pipeline.py report \
+  --run results/current/gine_2x32 --output results/current/gine_report
+```
+
+The fixed-capacity configurations are `gine_1x16.json`, `gine_2x32.json`, `gine_3x64.json` and `gine_2x32_skip.json`. They select graph sparsity inside inner validation. `default.json` instead allows an inner search over capacities and residual settings. Completion of separate fixed-capacity runs does not establish completion of that broader combined search.
+
+GINE stopping uses a separate participant split within inner training, followed by refitting before inner validation. Outer refitting uses a fixed epoch count derived from inner training. The maximum budget is 250 epochs with patience 25. `validation.json` uses a short budget to exercise software paths; its scores are not trained-model benchmarks.
+
+## 5. Rebuild the cohort figure
+
+The published aggregate table is sufficient; private inputs and model training are not required:
+
+```bash
+python code/reporting/plot_model_comparison.py
+python code/reporting/plot_model_comparison.py \
+  --mode none --output reports/current/paired_model_performance_no_combat
+# Optional display without confidence intervals:
+python code/reporting/plot_model_comparison.py \
+  --no-ci --output results/current/paired_model_performance_no_ci
+```
+
+Outputs are PNG, PDF and editable-text SVG. Panels show MAE, RMSE, R-squared and Pearson r separately for ADNI, ADRC and HABS. The default is training-age mean-only ComBat. GINE is the prespecified 2-by-32 reference, not the best arm selected using outer-test scores. Fusion is current early fusion, not historical weighted fusion.
+
+To regenerate the aggregate table from your completed original runs:
+
+```bash
+python code/reporting/export_paired_metrics.py \
+  --ridge-run results/current/ridge \
+  --gine-run results/current/gine_2x32 \
+  --output reports/current
+python code/reporting/plot_model_comparison.py
+```
+
+The exporter requires complete, audited, nonpilot five-fold paired runs with matching data, folds and evaluated observations. It exports aggregates and file fingerprints, not individual predictions. The current figure contains 237 CN scans from 189 participants: ADNI 125/77, ADRC 106/106 and HABS 6/6 (scans/participants). Bootstrap intervals use 3,000 cohort-stratified participant draws of fixed OOF predictions; they omit model-refitting and selection uncertainty.
+
+## 6. Reports, slides and downstream stages
+
+```bash
+python code/run_pipeline.py slides \
+  --run results/current/ridge --prepared results/current/prepared \
+  --output results/current/slides
+
+python code/run_pipeline.py diagnostics \
+  --run results/current/ridge --prepared results/current/prepared \
+  --output results/current/diagnostics
+
+python code/run_pipeline.py embeddings \
+  --run results/current/gine_2x32 --output results/current/embeddings
+```
+
+`attribute --help` describes original-checkpoint gradient-times-input sensitivity. Anatomical names require a verified 84-ROI ordering. Embedding projections are fitted within each fold's training space; raw coordinates from independently fitted models are not pooled.
+
+`clinical --help` requires a reviewed source table and verified coding, units and visit alignment. `configs/clinical_spec.json` is intentionally unverified and cannot authorize clinical inference by itself. Diagnosis defines the CN training reference; sex, APOE and metabolic variables are not age-prediction features.
+
+For training-size experiments, rerun `train` with `--fraction`, a new output directory and the same prepared data/configuration. Use `learning-curves --help` to summarize completed runs. Fractions refer to participant groups. Unsupported small-batch subsets fail explicitly. Learning curves report mean outer-fold MAE, which differs from pooled OOF MAE.
+
+The additional study-driver and portal scripts retain the original experiment directory conventions; use the commands above for a new analysis in a new checkout.
+
+## 7. Verification and resuming
+
+```bash
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python code/test_pipeline.py
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python code/final/test_foldwise_dwi.py
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python code/final/test_foldwise_fmri.py
+```
+
+Tests cover age-free transforms, fit/apply equivalence, participant boundaries, signed graphs, early fusion, calibration provenance, input paths and clinical gates. To resume an unchanged run, repeat its `train` command with `--resume`. Changed code, inputs, settings or populations require a new run directory. This cleanup adds an explicit preparation input-root option; do not resume an older source fingerprint under changed code.
+
+## Interpretation limits
+
+Current results are development reanalyses, not untouched external validation. Training-age mean-only ComBat does not prove complete biological preservation. Evaluation requires known batches with sufficient CN support. Source diagnoses, independent identity verification, acquisition/clinical dates, ADRC protocol consistency and ROI order remain unresolved. HABS has only six matched CN scans. A passed implementation audit does not establish clinical or anatomical validity.
+
+The repository does not distribute participant data or grant dataset redistribution permissions. Earlier files remain recoverable from Git history; local data, results and cleanup backups remain ignored.

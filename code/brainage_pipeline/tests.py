@@ -16,6 +16,39 @@ from .reporting import report
 
 
 class PipelineTests(unittest.TestCase):
+    def test_raw_manifest_paths_resolve_against_data_root(self):
+        from foldwise_dwi import load_eligible
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            metadata = root / 'data/final/ADNI'
+            metadata.mkdir(parents=True)
+            matrices = root / 'raw'
+            matrices.mkdir()
+            clinical = pd.DataFrame({
+                'CONNECTOME_KEY_USED_FOR_INTERSECTION': ['S0', 'S1'],
+                'PTID': ['P0', 'P1'], 'DX_Label_harmonized': ['CN', 'CN']})
+            clinical.to_csv(metadata / 'ADNI_harmonized_metadata(in).csv', index=False)
+            for i in range(2):
+                np.savetxt(matrices / f'scan{i}.csv', np.full((84, 84), .2), delimiter=',')
+            for modality in ['DWI', 'fMRI']:
+                rows = pd.DataFrame({
+                    'DATASET': ['ADNI', 'ADNI'], '__id__': ['S0', 'S1'],
+                    'AGE': [60., 70.], 'SEX': ['F', 'M'], 'DATASET_SITE': ['A', 'A'],
+                    'filepath': ['raw/scan0.csv', str(matrices / 'scan1.csv')]})
+                if modality == 'DWI':
+                    manifest = root / 'results/final/DWI/metadata/metadata_used_for_joint_combat.csv'
+                else:
+                    rows = rows.rename(columns={'__id__': 'connectome_key', 'AGE': 'Age',
+                                                'SEX': 'Sex', 'filepath': 'file_path'})
+                    manifest = root / 'results/final/fMRI/evaluation_inputs/fMRI_metadata_aligned.csv'
+                manifest.parent.mkdir(parents=True, exist_ok=True)
+                rows.to_csv(manifest, index=False)
+                values, meta, _, _ = load_eligible(root, 1, modality)
+                self.assertEqual(values.shape, (2, 3486))
+                np.testing.assert_allclose(values, .2)
+                self.assertEqual(meta.participant_group.nunique(), 2)
+
     @classmethod
     def setUpClass(cls):
         rng = np.random.default_rng(31)
