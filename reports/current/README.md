@@ -1,5 +1,18 @@
 # Current paired cohort comparison
 
+## Eight-panel before/after comparison
+
+[PDF](paired_model_performance_before_after.pdf) · [PNG](paired_model_performance_before_after.png) · [SVG](paired_model_performance_before_after.svg)
+
+[Point-estimate PDF without intervals](paired_model_performance_before_after_no_ci.pdf) · [PNG](paired_model_performance_before_after_no_ci.png) · [SVG](paired_model_performance_before_after_no_ci.svg)
+
+Rows compare no-ComBat (before) with training-age mean-only ComBat (after); columns show MAE, RMSE, R-squared and Pearson r. Each metric has identical before/after axis limits. Both arms fit their own models using training-only QC/scaling and identical participant folds. This compares declared evaluation arms, not the same fitted predictions before and after a post-hoc correction. The no-interval companion makes point differences visible without suppressing the very wide HABS intervals in the main figure.
+
+```bash
+python code/reporting/plot_model_comparison.py --before-after
+python code/reporting/plot_model_comparison.py --before-after --no-ci --output reports/current/paired_model_performance_before_after_no_ci
+```
+
 [Four-panel PDF](paired_model_performance.pdf) · [PNG](paired_model_performance.png) · [SVG](paired_model_performance.svg)
 
 [No-ComBat PDF](paired_model_performance_no_combat.pdf) · [PNG](paired_model_performance_no_combat.png) · [SVG](paired_model_performance_no_combat.svg)

@@ -90,6 +90,7 @@ The published aggregate table is sufficient; private inputs and model training a
 
 ```bash
 python code/reporting/plot_model_comparison.py
+python code/reporting/plot_model_comparison.py --before-after
 python code/reporting/plot_model_comparison.py \
   --mode none --output reports/current/paired_model_performance_no_combat
 # Optional display without confidence intervals:

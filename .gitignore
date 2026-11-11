@@ -48,6 +48,12 @@
 !/reports/current/paired_model_performance_no_combat.png
 !/reports/current/paired_model_performance_no_combat.pdf
 !/reports/current/paired_model_performance_no_combat.svg
+!/reports/current/paired_model_performance_before_after.png
+!/reports/current/paired_model_performance_before_after.pdf
+!/reports/current/paired_model_performance_before_after.svg
+!/reports/current/paired_model_performance_before_after_no_ci.png
+!/reports/current/paired_model_performance_before_after_no_ci.pdf
+!/reports/current/paired_model_performance_before_after_no_ci.svg
 # Runtime data, notebooks, secrets and environments remain local.
 **/__pycache__/
 *.py[cod]
